@@ -60,6 +60,8 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
       if (response.ok) {
         if (isLogin) {
           setMessage("Login successful!");
+
+          router.push("/(MainPage)/home")
           // Optionally, store tokens or navigate to a protected route
         } else {
           setMessage("Sign up successful!");
