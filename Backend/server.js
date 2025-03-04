@@ -10,6 +10,8 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use(cors());
+
+
 // Endpoint for user sign-up
 // Endpoint for user sign-up
 app.post('/api/signup', async (req, res) => {
@@ -26,7 +28,7 @@ app.post('/api/signup', async (req, res) => {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(password, saltRounds);
   
-      // Insert the new user with the hashed password into the correct columns
+      // Insert the new user with the hashed passwoQDrd into the correct columns
       const result = await pool.query(
         'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *',
         [username, email, hashedPassword]
@@ -68,6 +70,6 @@ app.post('/api/login', async (req, res) => {
   
 
 // Start the server
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}`);
 });

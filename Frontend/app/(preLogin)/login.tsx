@@ -42,7 +42,7 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
       return;
     }
 
-    const endpoint = isLogin ? 'http://localhost:3000/api/login' : 'http://localhost:3000/api/signup';
+    const endpoint = isLogin ? 'http://192.168.1.66:3000/api/login' : 'http://192.168.1.66:3000/api/signup';
     const body = isLogin
       ? { email, password }
       : { username, email, password };
