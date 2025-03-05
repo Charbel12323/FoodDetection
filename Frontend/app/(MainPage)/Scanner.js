@@ -1,10 +1,10 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function App() {
-  
   const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef(null); // Create a ref for the camera
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -21,13 +21,22 @@ export default function App() {
     );
   }
 
- 
+  const handleTakePicture = async () => {
+    if (cameraRef.current) {
+      try {
+        const photo = await cameraRef.current.takePictureAsync();
+        console.log('Photo taken:', photo);
+        // You can now use the photo object (e.g., display it or upload it)
+      } catch (error) {
+        console.log('Error taking picture:', error);
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} >
-        <Button title="Take Pic" />
-       
+      <CameraView style={styles.camera} ref={cameraRef}>
+        <Button title="Take Pic" onPress={handleTakePicture} />
       </CameraView>
     </View>
   );
@@ -44,21 +53,5 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
   },
 });
