@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router"; // <-- Use expo-router's hook
 import { ScanLine, Mail, Lock, Eye, EyeOff, User, ArrowLeft } from "lucide-react-native";
-import { useNavigation } from "@react-navigation/native";
 
 export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {} }) {
   const router = useRouter();
@@ -24,6 +23,7 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   const backgroundStyle = {
@@ -31,27 +31,51 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
     flex: 1,
   };
 
+  // Function to handle authentication (login or sign-up)
   const handleAuth = async () => {
+    setMessage('');
     setLoading(true);
-    if (!email || !password) {
-      Alert.alert("Error", "Please fill in all required fields");
-      setLoading(false);
-      return;
-    }
+    // If we're in sign-up mode, check that passwords match
     if (!isLogin && password !== confirmPassword) {
-      Alert.alert("Error", "Passwords don't match");
+      setMessage("Passwords do not match");
       setLoading(false);
       return;
     }
+
+    const endpoint = isLogin ? 'http://192.168.1.66:3000/api/login' : 'http://192.168.1.66:3000/api/signup';
+    const body = isLogin
+      ? { email, password }
+      : { username, email, password };
+
     try {
-      if (isLogin) {
-        console.log("Logging in with:", email, password);
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        if (isLogin) {
+          setMessage("Login successful!");
+
+          router.push("/(MainPage)/home")
+          // Optionally, store tokens or navigate to a protected route
+        } else {
+          setMessage("Sign up successful!");
+          // Navigate to login page after a brief delay (or immediately)
+          
+          
+          setIsLogin(true);
+        }
       } else {
-        console.log("Signing up with:", email, password, username);
+        setMessage(data.error || (isLogin ? "Login failed" : "Sign up failed"));
       }
-      Alert.alert("Success", isLogin ? "Login successful!" : "Account created successfully!");
     } catch (error) {
-      Alert.alert("Error", error.message);
+      console.error("Error during authentication:", error);
+      setMessage("An error occurred.");
     } finally {
       setLoading(false);
     }
@@ -61,6 +85,7 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
     setIsLogin(!isLogin);
     setPassword("");
     setConfirmPassword("");
+    setMessage('');
   };
 
   return (
@@ -81,7 +106,7 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
           {/* Back Button */}
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => router.back()} // Use router.push with the correct path
+            onPress={() => router.back()}
           >
             <ArrowLeft size={24} color={darkMode ? "#60A5FA" : "#2563EB"} />
           </TouchableOpacity>
@@ -203,6 +228,8 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
               </Text>
             </TouchableOpacity>
             
+            {message ? <Text style={[styles.messageText, { color: darkMode ? "#FFFFFF" : "#111827" }]}>{message}</Text> : null}
+            
             <View style={styles.switchModeContainer}>
               <Text style={[styles.switchModeText, { color: darkMode ? "#D1D5DB" : "#6B7280" }]}>
                 {isLogin ? "Don't have an account?" : "Already have an account?"}
@@ -304,6 +331,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+  messageText: {
+    textAlign: "center",
+    marginBottom: 16,
+    fontSize: 14,
   },
   switchModeContainer: {
     flexDirection: "row",
