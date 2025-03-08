@@ -42,6 +42,49 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
+// POST endpoint to update ingredients for a user
+app.post('/api/ingredients', async (req, res) => {
+  try {
+    const { userId, ingredients } = req.body;
+    if (!userId || !Array.isArray(ingredients)) {
+      return res.status(400).json({ error: 'Invalid data provided.' });
+    }
+
+    // Insert each approved ingredient
+    const insertPromises = ingredients.map(ingredient =>
+      pool.query('INSERT INTO user_ingredients (user_id, ingredient) VALUES ($1, $2)', [userId, ingredient])
+    );
+    await Promise.all(insertPromises);
+
+    res.status(200).json({ message: "Ingredients updated successfully" });
+  } catch (error) {
+    console.error("Error updating ingredients:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// GET endpoint to retrieve ingredients for a user
+app.get('/api/ingredients', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(400).json({ error: 'Missing userId.' });
+    }
+    const result = await pool.query(
+      'SELECT ingredient FROM user_ingredients WHERE user_id = $1::int',
+      [userId]
+    );
+    
+    const ingredients = result.rows.map(row => row.ingredient);
+    res.json({ ingredients });
+  } catch (error) {
+    console.error("Error fetching ingredients:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+
 // User log-in endpoint
 app.post('/api/login', async (req, res) => {
   try {
@@ -82,7 +125,6 @@ app.post('/upload-base64', async (req, res) => {
     // Create a chat completion request with an updated prompt.
     const response = await openai.chat.completions.create({
       model: "gpt-4o", // Use the appropriate model supporting images
-      model: "gpt-4o",
       messages: [
         {
           role: "system",
