@@ -46,9 +46,9 @@ function Header() {
     fetchIngredients();
   }, []);
 
-  const totalIngredients = ingredients.length;
+
   const uniqueIngredients = new Set(ingredients).size;
-  const lastApproved = totalIngredients > 0 ? totalIngredients : 0;
+
   
   // Get current date for header
   const today = new Date();
@@ -95,20 +95,7 @@ function Header() {
           }
         ]}
       >
-        <TouchableOpacity activeOpacity={0.9}>
-          <LinearGradient
-            colors={['#4158D0', '#C850C0']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.card}
-          >
-            <View style={styles.cardIconContainer}>
-              <Refrigerator size={24} color="#FFFFFF" />
-            </View>
-            <Text style={styles.cardValue}>{totalIngredients}</Text>
-            <Text style={styles.cardTitle}>Total Items</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+       
         
         <TouchableOpacity activeOpacity={0.9}>
           <LinearGradient
@@ -125,20 +112,7 @@ function Header() {
           </LinearGradient>
         </TouchableOpacity>
         
-        <TouchableOpacity activeOpacity={0.9}>
-          <LinearGradient
-            colors={['#FF416C', '#FF4B2B']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.card}
-          >
-            <View style={styles.cardIconContainer}>
-              <Clock size={24} color="#FFFFFF" />
-            </View>
-            <Text style={styles.cardValue}>{lastApproved}</Text>
-            <Text style={styles.cardTitle}>Last Added</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        
       </Animated.View>
       
       {/* Decorative Element */}
