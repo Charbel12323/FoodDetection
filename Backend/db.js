@@ -3,11 +3,11 @@ const { Pool } = require('pg');
 
 // Configure your connection pool
 const pool = new Pool({
-  user: 'postgres',       // Replace with your PostgreSQL username
-  host: 'localhost',           // Server address
-  database: 'fridgeapp',   // Replace with your database name
-  password: 'Charbs123',   // Replace with your database password
-  port: 5432,                  // Default PostgreSQL port
+  user: process.env.DB_USER || 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  database: process.env.DB_NAME || 'fridgeapp',
+  password: process.env.DB_PASSWORD || 'Charbs123',
+  port: process.env.DB_PORT || 5432,
 });
 
 // Export the pool instance so that it can be reused (singleton)

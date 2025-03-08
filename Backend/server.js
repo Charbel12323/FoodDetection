@@ -125,7 +125,6 @@ app.post('/upload-base64', async (req, res) => {
     // Create a chat completion request with an updated prompt.
     const response = await openai.chat.completions.create({
       model: "gpt-4o", // Use the appropriate model supporting images
-      model: "gpt-4o",
       messages: [
         {
           role: "system",
