@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions, Animated, TouchableOpacity } from 'react-native';
 import { ScanLine, Layers } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-// Import the service function
+
 import { getIngredients } from '@/api/ingredientService';
 
 function Header() {

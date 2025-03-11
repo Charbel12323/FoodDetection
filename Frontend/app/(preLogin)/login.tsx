@@ -15,7 +15,6 @@ import {
 import { useRouter } from "expo-router";
 import { ScanLine, Mail, Lock, Eye, EyeOff, User, ArrowLeft } from "lucide-react-native";
 
-// 1) Import the new service
 import { login, signup } from "@/api/authService";
 
 export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {} }) {
@@ -31,12 +30,10 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
 
   const backgroundStyle = { backgroundColor: darkMode ? "#121212" : "#F9FAFB", flex: 1 };
 
-  // 2) Handle Auth with your new service
   const handleAuth = async () => {
     setMessage("");
     setLoading(true);
 
-    // If signing up, validate matching passwords
     if (!isLogin && password !== confirmPassword) {
       setMessage("Passwords do not match");
       setLoading(false);
@@ -46,13 +43,10 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
     try {
       let data;
       if (isLogin) {
-        // 3) Call login service
         data = await login(email, password);
         setMessage("Login successful!");
-        // Optional: store tokens/user info here (AsyncStorage, Redux, etc.)
         router.push("/(MainPage)/home");
       } else {
-        // 4) Call signup service
         data = await signup(username, email, password);
         setMessage("Sign up successful!");
         setIsLogin(true);

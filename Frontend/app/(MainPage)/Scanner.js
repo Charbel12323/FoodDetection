@@ -1,5 +1,5 @@
-// CameraScreen.js (or App.js if you prefer)
-// Replace the file name with something like CameraScreen.js if using expo-router
+
+
 import React, { useState, useRef } from 'react';
 import { 
   StyleSheet, Text, View, ScrollView, TouchableOpacity, ActivityIndicator, 
@@ -7,8 +7,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { uploadBase64, saveIngredients } from '../../api/ingredientService';  // <-- NEW
-// import AsyncStorage from '@react-native-async-storage/async-storage';       // <-- If you want to store/fetch userId
+import { uploadBase64, saveIngredients } from '../../api/ingredientService'; 
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -38,7 +37,7 @@ export default function CameraScreen() {
       } else if (result.ingredients) {
         setGptResponse(result);
       } else if (result.message && result.message.content) {
-        // Fallback: parse the nested message
+       
         const rawResponse = result.message.content;
         try {
           const parsedResponse = JSON.parse(rawResponse);
