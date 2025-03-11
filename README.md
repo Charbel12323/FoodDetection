@@ -131,9 +131,7 @@ npm start
 ```
 fridge-scanning-app/
 ├── frontend/          # React Native & Next.js applications
-├── backend/           # Node.js & Python backend services
-├── database/          # Database schemas and migrations
-└── docs/             # Documentation
+├── backend/           # Node.js backend services & database
 ```
 
 ## Team
