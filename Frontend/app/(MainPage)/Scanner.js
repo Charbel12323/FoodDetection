@@ -1,108 +1,102 @@
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { Button, StyleSheet, Text, View, ScrollView, TouchableOpacity, ActivityIndicator, SafeAreaView, StatusBar, Dimensions } from 'react-native';
-import { useRouter } from 'expo-router';
-import React, { useState, useRef, useEffect } from 'react';
+// CameraScreen.js (or App.js if you prefer)
+// Replace the file name with something like CameraScreen.js if using expo-router
+import React, { useState, useRef } from 'react';
+import { 
+  StyleSheet, Text, View, ScrollView, TouchableOpacity, ActivityIndicator, 
+  SafeAreaView, StatusBar, Dimensions 
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { uploadBase64, saveIngredients } from '../../api/ingredientService';  // <-- NEW
+// import AsyncStorage from '@react-native-async-storage/async-storage';       // <-- If you want to store/fetch userId
 
-export default function App() {
+export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
+  
   const [loading, setLoading] = useState(false);
   const [gptResponse, setGptResponse] = useState(null);
   const [flashMode, setFlashMode] = useState('off');
-
-
   
+  // 1) Take a picture and upload to the server
   const handleTakePicture = async () => {
-    if (cameraRef.current) {
-      try {
-        setLoading(true);
-  
-        // Capture photo with Base64 enabled
-        const photo = await cameraRef.current.takePictureAsync({ base64: true });
-        console.log('Photo taken:', photo);
-  
-        // Send the Base64 string to the backend
-        const response = await fetch('http://192.168.1.66:3000/upload-base64', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            photo: photo.base64.replace(/^data:image\/\w+;base64,/, '')
-          })
-        });
-        
-        const result = await response.json();
-        console.log('Scan result:', result);
-  
-        // Process the raw GPT response
-        if (result.data && result.data.ingredients) {
-          setGptResponse(result.data);
-        } else if (result.ingredients) {
-          setGptResponse(result);
-        } else if (result.message && result.message.content) {
-          // Fallback: if there's a nested message, try to parse it.
-          const rawResponse = result.message.content;
-          console.log("Raw GPT response:", rawResponse);
-          try {
-            const parsedResponse = JSON.parse(rawResponse);
-            setGptResponse(parsedResponse);
-          } catch (error) {
-            console.error("Error parsing GPT response as JSON:", error);
-          }
-        } else {
-          console.error("Unexpected response format:", result);
+    if (!cameraRef.current) return;
+    
+    try {
+      setLoading(true);
+      // Capture photo with Base64 enabled
+      const photo = await cameraRef.current.takePictureAsync({ base64: true });
+      console.log('Photo taken:', photo);
+
+      // Use service to send the Base64 string to your backend
+      const result = await uploadBase64(photo.base64);
+      console.log('Scan result from service:', result);
+
+      // Process the raw GPT response
+      if (result.data && result.data.ingredients) {
+        setGptResponse(result.data);
+      } else if (result.ingredients) {
+        setGptResponse(result);
+      } else if (result.message && result.message.content) {
+        // Fallback: parse the nested message
+        const rawResponse = result.message.content;
+        try {
+          const parsedResponse = JSON.parse(rawResponse);
+          setGptResponse(parsedResponse);
+        } catch (error) {
+          console.error('Error parsing GPT response as JSON:', error);
         }
-      } finally {
-        setLoading(false);
+      } else {
+        console.error('Unexpected response format:', result);
       }
+    } catch (error) {
+      console.error('Error during image upload:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // 2) Approve the detected ingredients and save to the backend
   const handleApprove = async () => {
+    if (!gptResponse || !gptResponse.ingredients) return;
+
     try {
-      // Replace with your actual logged-in user ID
+      // For demonstration, we still have a hardcoded userId.
+      // In a real app, fetch userId from AsyncStorage, Redux, or
+      // from your current user session.
       const userId = 6;
-      const response = await fetch('http://192.168.1.66:3000/api/ingredients', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userId,
-          ingredients: gptResponse.ingredients
-        })
-      });
-      const result = await response.json();
-      if (response.ok) {
-        alert('Ingredients approved and saved!');
-      } else {
-        alert('Error saving ingredients');
-        console.error(result);
-      }
+
+      const response = await saveIngredients(userId, gptResponse.ingredients);
+      console.log('Ingredients saved:', response);
+
+      alert('Ingredients approved and saved!');
     } catch (error) {
+      alert('Error saving ingredients');
       console.error('Error approving ingredients:', error);
     }
   };
-  
-  
+
+  // 3) Remove an ingredient from the list
   const handleDeleteIngredient = (index) => {
-    setGptResponse((prev) => ({
+    setGptResponse(prev => ({
       ...prev,
       ingredients: prev.ingredients.filter((_, i) => i !== index),
     }));
   };
 
+  // 4) Toggle flash mode
   const toggleFlash = () => {
     setFlashMode(flashMode === 'off' ? 'on' : 'off');
   };
 
+  // Handle camera permission state
   if (!permission) {
+    // If permission object is null, we can return an empty view or a loading spinner
     return <View />;
   }
 
   if (!permission.granted) {
+    // Permission not yet granted
     return (
       <SafeAreaView style={styles.permissionContainer}>
         <LinearGradient
@@ -125,7 +119,7 @@ export default function App() {
     );
   }
 
-  
+  // 5) Render the result screen if we have recognized ingredients
   if (gptResponse && gptResponse.ingredients) {
     return (
       <SafeAreaView style={styles.resultContainer}>
@@ -140,42 +134,41 @@ export default function App() {
           </Text>
         </View>
         <ScrollView 
-  contentContainerStyle={styles.ingredientsList}
-  showsVerticalScrollIndicator={false}
->
-  {gptResponse.ingredients.map((ingredient, index) => (
-    <View key={index} style={styles.ingredientCard}>
-      <View style={styles.ingredientIconContainer}>
-        <Text style={styles.ingredientIcon}>🥘</Text>
-      </View>
-      <Text style={styles.ingredientText}>{ingredient}</Text>
-      <TouchableOpacity 
-        style={styles.deleteButton}
-        onPress={() => handleDeleteIngredient(index)}
-      >
-        <Text style={styles.deleteButtonText}>×</Text>
-      </TouchableOpacity>
-    </View>
-  ))}
-</ScrollView>
-<TouchableOpacity 
-  style={styles.approveButton}
-  onPress={handleApprove}
->
-  <Text style={styles.approveButtonText}>Approve</Text>
-</TouchableOpacity>
-<TouchableOpacity 
-  style={styles.backButton}
-  onPress={() => setGptResponse(null)}
->
-  <Text style={styles.backButtonText}>Take Another Photo</Text>
-</TouchableOpacity>
-
+          contentContainerStyle={styles.ingredientsList}
+          showsVerticalScrollIndicator={false}
+        >
+          {gptResponse.ingredients.map((ingredient, index) => (
+            <View key={index} style={styles.ingredientCard}>
+              <View style={styles.ingredientIconContainer}>
+                <Text style={styles.ingredientIcon}>🥘</Text>
+              </View>
+              <Text style={styles.ingredientText}>{ingredient}</Text>
+              <TouchableOpacity 
+                style={styles.deleteButton}
+                onPress={() => handleDeleteIngredient(index)}
+              >
+                <Text style={styles.deleteButtonText}>×</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+        <TouchableOpacity 
+          style={styles.approveButton}
+          onPress={handleApprove}
+        >
+          <Text style={styles.approveButtonText}>Approve</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => setGptResponse(null)}
+        >
+          <Text style={styles.backButtonText}>Take Another Photo</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
 
-
+  // 6) Default UI with CameraView
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -196,7 +189,6 @@ export default function App() {
               </Text>
             </TouchableOpacity>
           </View>
-          
           <View style={styles.cameraFooter}>
             {loading ? (
               <View style={styles.loadingContainer}>
@@ -218,6 +210,7 @@ export default function App() {
     </View>
   );
 }
+
 
 const { width, height } = Dimensions.get('window');
 

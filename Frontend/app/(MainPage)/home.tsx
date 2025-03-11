@@ -1,32 +1,29 @@
-import React, { useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions, Animated, TouchableOpacity } from 'react-native';
-import { ScanLine, Refrigerator, Layers, Clock } from 'lucide-react-native';
+import { ScanLine, Layers } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+// Import the service function
+import { getIngredients } from '@/api/ingredientService';
 
 function Header() {
   const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(20)).current;
-  
 
   useEffect(() => {
     const fetchIngredients = async () => {
       try {
         setLoading(true);
-        // Replace userId=1 with the actual logged-in user's ID
-        const response = await fetch('http://192.168.1.66:3000/api/ingredients?userId=6');
-        const data = await response.json();
-        if (data.ingredients) {
-          setIngredients(data.ingredients);
-        }
+        // Replace 6 with the actual logged-in user's ID if needed
+        const fetchedIngredients = await getIngredients(6);
+        setIngredients(fetchedIngredients);
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
-        
         // Start animations after data loads
         Animated.parallel([
           Animated.timing(fadeAnim, {
@@ -42,18 +39,12 @@ function Header() {
         ]).start();
       }
     };
-    
+
     fetchIngredients();
-  }, []);
+  }, [fadeAnim, translateY]);
 
-
+  // Calculate number of unique ingredients
   const uniqueIngredients = new Set(ingredients).size;
-
-  
-  // Get current date for header
-  const today = new Date();
-  const options = { weekday: 'long', month: 'long', day: 'numeric' };
- 
 
   return (
     <View style={styles.container}>
@@ -73,10 +64,8 @@ function Header() {
               Fridge<Text style={styles.logoTextHighlight}>Scan</Text>
             </Text>
           </View>
-          
-          
         </View>
-        
+
         <View style={styles.welcomeContainer}>
           <Text style={styles.welcomeText}>Your Kitchen Inventory</Text>
           <Text style={styles.welcomeSubtext}>
@@ -84,7 +73,7 @@ function Header() {
           </Text>
         </View>
       </LinearGradient>
-      
+
       {/* Stats Cards */}
       <Animated.View 
         style={[
@@ -95,8 +84,6 @@ function Header() {
           }
         ]}
       >
-       
-        
         <TouchableOpacity activeOpacity={0.9}>
           <LinearGradient
             colors={['#0BAB64', '#3BB78F']}
@@ -111,11 +98,9 @@ function Header() {
             <Text style={styles.cardTitle}>Unique Items</Text>
           </LinearGradient>
         </TouchableOpacity>
-        
-        
       </Animated.View>
-      
-      {/* Decorative Element */}
+
+      {/* Decorative Elements */}
       <View style={styles.decorativeCircle} />
       <View style={styles.decorativeCircleSmall} />
     </View>
@@ -168,17 +153,6 @@ const styles = StyleSheet.create({
   logoTextHighlight: {
     color: '#6EE7B7',
   },
-  dateContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  dateText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '500',
-  },
   welcomeContainer: {
     marginTop: 25,
     paddingHorizontal: 20,
@@ -195,7 +169,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cardsContainer: {
-    
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
