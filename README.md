@@ -121,10 +121,10 @@ OPENAI_API_KEY=your_api_key
 2. Start the development servers:
 ```bash
 # Frontend
-npm run dev
+npx expo start 
 
 # Backend
-npm start
+node server.js
 ```
 
 ## Project Structure
