@@ -79,14 +79,14 @@ The Fridge Scanning App addresses these challenges through:
 - OpenAI GPT-4
 
 ### Database
-- MySQL
+- PostgreSQL
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js (v16 or higher)
 - Python 3.8+
-- MySQL
+- PostgreSQL
 
 ### Installation
 
