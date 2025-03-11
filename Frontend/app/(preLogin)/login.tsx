@@ -1,3 +1,4 @@
+// LoginScreen.js
 import React, { useState } from "react";
 import {
   SafeAreaView,
@@ -10,10 +11,12 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Alert,
 } from "react-native";
-import { useRouter } from "expo-router"; // <-- Use expo-router's hook
+import { useRouter } from "expo-router";
 import { ScanLine, Mail, Lock, Eye, EyeOff, User, ArrowLeft } from "lucide-react-native";
+
+// 1) Import the new service
+import { login, signup } from "@/api/authService";
 
 export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {} }) {
   const router = useRouter();
@@ -23,59 +26,39 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const backgroundStyle = {
-    backgroundColor: darkMode ? "#121212" : "#F9FAFB",
-    flex: 1,
-  };
+  const backgroundStyle = { backgroundColor: darkMode ? "#121212" : "#F9FAFB", flex: 1 };
 
-  // Function to handle authentication (login or sign-up)
+  // 2) Handle Auth with your new service
   const handleAuth = async () => {
-    setMessage('');
+    setMessage("");
     setLoading(true);
-    // If we're in sign-up mode, check that passwords match
+
+    // If signing up, validate matching passwords
     if (!isLogin && password !== confirmPassword) {
       setMessage("Passwords do not match");
       setLoading(false);
       return;
     }
 
-    const endpoint = isLogin ? 'http://192.168.1.66:3000/api/login' : 'http://192.168.1.66:3000/api/signup';
-    const body = isLogin
-      ? { email, password }
-      : { username, email, password };
-
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        if (isLogin) {
-          setMessage("Login successful!");
-
-          router.push("/(MainPage)/home")
-          // Optionally, store tokens or navigate to a protected route
-        } else {
-          setMessage("Sign up successful!");
-          // Navigate to login page after a brief delay (or immediately)
-          
-          
-          setIsLogin(true);
-        }
+      let data;
+      if (isLogin) {
+        // 3) Call login service
+        data = await login(email, password);
+        setMessage("Login successful!");
+        // Optional: store tokens/user info here (AsyncStorage, Redux, etc.)
+        router.push("/(MainPage)/home");
       } else {
-        setMessage(data.error || (isLogin ? "Login failed" : "Sign up failed"));
+        // 4) Call signup service
+        data = await signup(username, email, password);
+        setMessage("Sign up successful!");
+        setIsLogin(true);
       }
     } catch (error) {
-      console.error("Error during authentication:", error);
-      setMessage("An error occurred.");
+      setMessage(error.message);
     } finally {
       setLoading(false);
     }
@@ -85,7 +68,7 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
     setIsLogin(!isLogin);
     setPassword("");
     setConfirmPassword("");
-    setMessage('');
+    setMessage("");
   };
 
   return (
@@ -125,7 +108,8 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
             <Text style={[styles.formSubtitle, { color: darkMode ? "#D1D5DB" : "#4B5563" }]}>
               {isLogin 
                 ? "Sign in to continue managing your kitchen inventory" 
-                : "Join FridgeScan to start tracking your food and reduce waste"}
+                : "Join FridgeScan to start tracking your food and reduce waste"
+              }
             </Text>
 
             <View style={styles.inputsContainer}>
@@ -137,7 +121,11 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                   <TextInput
                     style={[
                       styles.input,
-                      { backgroundColor: darkMode ? "#1F2937" : "#FFFFFF", color: darkMode ? "#FFFFFF" : "#111827", borderColor: darkMode ? "#374151" : "#E5E7EB" },
+                      { 
+                        backgroundColor: darkMode ? "#1F2937" : "#FFFFFF", 
+                        color: darkMode ? "#FFFFFF" : "#111827", 
+                        borderColor: darkMode ? "#374151" : "#E5E7EB" 
+                      },
                     ]}
                     placeholder="Username"
                     placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
@@ -147,7 +135,8 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                   />
                 </View>
               )}
-              
+
+              {/* Email Field */}
               <View style={styles.inputWrapper}>
                 <View style={[styles.inputIconContainer, { backgroundColor: darkMode ? "#374151" : "#EFF6FF" }]}>
                   <Mail size={20} color={darkMode ? "#60A5FA" : "#2563EB"} />
@@ -155,7 +144,11 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                 <TextInput
                   style={[
                     styles.input,
-                    { backgroundColor: darkMode ? "#1F2937" : "#FFFFFF", color: darkMode ? "#FFFFFF" : "#111827", borderColor: darkMode ? "#374151" : "#E5E7EB" },
+                    { 
+                      backgroundColor: darkMode ? "#1F2937" : "#FFFFFF",
+                      color: darkMode ? "#FFFFFF" : "#111827",
+                      borderColor: darkMode ? "#374151" : "#E5E7EB" 
+                    },
                   ]}
                   placeholder="Email"
                   placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
@@ -165,7 +158,8 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                   autoCapitalize="none"
                 />
               </View>
-              
+
+              {/* Password Field */}
               <View style={styles.inputWrapper}>
                 <View style={[styles.inputIconContainer, { backgroundColor: darkMode ? "#374151" : "#EFF6FF" }]}>
                   <Lock size={20} color={darkMode ? "#60A5FA" : "#2563EB"} />
@@ -173,7 +167,11 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                 <TextInput
                   style={[
                     styles.input,
-                    { backgroundColor: darkMode ? "#1F2937" : "#FFFFFF", color: darkMode ? "#FFFFFF" : "#111827", borderColor: darkMode ? "#374151" : "#E5E7EB" },
+                    { 
+                      backgroundColor: darkMode ? "#1F2937" : "#FFFFFF",
+                      color: darkMode ? "#FFFFFF" : "#111827",
+                      borderColor: darkMode ? "#374151" : "#E5E7EB" 
+                    },
                   ]}
                   placeholder="Password"
                   placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
@@ -181,15 +179,18 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                 />
-                <TouchableOpacity style={styles.passwordToggle} onPress={() => setShowPassword(!showPassword)}>
-                  {showPassword ? (
-                    <EyeOff size={20} color={darkMode ? "#9CA3AF" : "#6B7280"} />
-                  ) : (
-                    <Eye size={20} color={darkMode ? "#9CA3AF" : "#6B7280"} />
-                  )}
+                <TouchableOpacity 
+                  style={styles.passwordToggle} 
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword 
+                    ? <EyeOff size={20} color={darkMode ? "#9CA3AF" : "#6B7280"} />
+                    : <Eye size={20} color={darkMode ? "#9CA3AF" : "#6B7280"} />
+                  }
                 </TouchableOpacity>
               </View>
-              
+
+              {/* Confirm Password (Sign-Up Only) */}
               {!isLogin && (
                 <View style={styles.inputWrapper}>
                   <View style={[styles.inputIconContainer, { backgroundColor: darkMode ? "#374151" : "#EFF6FF" }]}>
@@ -198,7 +199,11 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                   <TextInput
                     style={[
                       styles.input,
-                      { backgroundColor: darkMode ? "#1F2937" : "#FFFFFF", color: darkMode ? "#FFFFFF" : "#111827", borderColor: darkMode ? "#374151" : "#E5E7EB" },
+                      { 
+                        backgroundColor: darkMode ? "#1F2937" : "#FFFFFF",
+                        color: darkMode ? "#FFFFFF" : "#111827",
+                        borderColor: darkMode ? "#374151" : "#E5E7EB" 
+                      },
                     ]}
                     placeholder="Confirm Password"
                     placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
@@ -208,7 +213,8 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                   />
                 </View>
               )}
-              
+
+              {/* Forgot Password (Login Only) */}
               {isLogin && (
                 <TouchableOpacity style={styles.forgotPasswordContainer}>
                   <Text style={[styles.forgotPasswordText, { color: darkMode ? "#60A5FA" : "#2563EB" }]}>
@@ -217,7 +223,8 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                 </TouchableOpacity>
               )}
             </View>
-            
+
+            {/* Auth Button */}
             <TouchableOpacity
               style={[styles.authButton, { opacity: loading ? 0.7 : 1 }]}
               onPress={handleAuth}
@@ -227,9 +234,15 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
                 {isLogin ? "Sign In" : "Create Account"}
               </Text>
             </TouchableOpacity>
-            
-            {message ? <Text style={[styles.messageText, { color: darkMode ? "#FFFFFF" : "#111827" }]}>{message}</Text> : null}
-            
+
+            {/* Message Text */}
+            {message ? (
+              <Text style={[styles.messageText, { color: darkMode ? "#FFFFFF" : "#111827" }]}>
+                {message}
+              </Text>
+            ) : null}
+
+            {/* Toggle Between Login and Sign-Up */}
             <View style={styles.switchModeContainer}>
               <Text style={[styles.switchModeText, { color: darkMode ? "#D1D5DB" : "#6B7280" }]}>
                 {isLogin ? "Don't have an account?" : "Already have an account?"}
@@ -246,6 +259,9 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
     </SafeAreaView>
   );
 }
+
+
+
 
 const styles = StyleSheet.create({
   scrollContent: {
