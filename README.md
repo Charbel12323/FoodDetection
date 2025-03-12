@@ -114,6 +114,7 @@ npm install
 ```env
 DB_HOST=localhost
 DB_USER=your_username
+DB_Name= database_name
 DB_PASS=your_password
 OPENAI_API_KEY=your_api_key
 ```
