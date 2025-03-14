@@ -2,12 +2,14 @@
 import { useState, useRef } from 'react';
 import { uploadBase64, saveIngredients } from '@/api/ingredientService';
 import { useUserStore } from '@/stores/useUserStore';
+import { useRouter } from 'expo-router';
 
 export default function useCameraScanner() {
   const cameraRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [gptResponse, setGptResponse] = useState(null);
   const userId = useUserStore(state => state.user?.user_id);
+  const router = useRouter();
 
   console.log(userId);
 
@@ -51,6 +53,7 @@ export default function useCameraScanner() {
       const response = await saveIngredients(userId, gptResponse.ingredients);
       console.log('Ingredients saved:', response);
       alert('Ingredients approved and saved!');
+      router.push('/(MainPage)/RecipeSuggestions'); 
     } catch (error) {
       alert('Error saving ingredients');
       console.error('Error approving ingredients:', error);
