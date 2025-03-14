@@ -71,7 +71,7 @@ const getRandomIngredients = () => {
  */
 exports.analyzeImage = async (req, res) => {
   try {
-    // Handle mock data scenario
+    // Using Mock to imitate GPT's ingredients list (no access to key and testing purposes)
     if (USE_MOCK) {
       const ingredients = getRandomIngredients();
 
