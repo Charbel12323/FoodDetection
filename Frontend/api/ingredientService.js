@@ -1,6 +1,8 @@
 // services/ingredientService.js
+import { baseURL } from "@/utilities/constants";
 
-const BASE_URL = 'http://192.168.1.66:3000';
+
+const BASE_URL = baseURL;
 
 // Upload Base64 image to the server/OpenAI
 export async function uploadBase64(photoBase64) {
