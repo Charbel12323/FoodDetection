@@ -214,8 +214,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-📧 Email: charbel.maroun@ucalgary.ca
-📧 Email: alymohammed.masani@ucalgary.ca
+📧 charbel.maroun@ucalgary.ca  
+📧 alymohammed.masani@ucalgary.ca  
 
 ---
 
