@@ -81,7 +81,7 @@ The Fridge Scanning App addresses these challenges through:
 ### Database
 - PostgreSQL
 
-## Getting Started
+## Frontend and Backend setup
 
 ### Prerequisites
 - Node.js (v16 or higher)
