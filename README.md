@@ -114,6 +114,7 @@ npm install
 ```env
 DB_HOST=localhost
 DB_USER=your_username
+DB_Name= database_name
 DB_PASS=your_password
 OPENAI_API_KEY=your_api_key
 ```
@@ -121,10 +122,10 @@ OPENAI_API_KEY=your_api_key
 2. Start the development servers:
 ```bash
 # Frontend
-npm run dev
+npx expo start 
 
 # Backend
-npm start
+node server.js
 ```
 
 ## Project Structure
