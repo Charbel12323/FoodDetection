@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  StyleSheet,
   Text,
   View,
   TextInput,
@@ -15,8 +14,8 @@ import {
 import { useRouter } from "expo-router";
 import { ScanLine, Mail, Lock, Eye, EyeOff, User, ArrowLeft } from "lucide-react-native";
 
-// 1) Import the new service
 import { login, signup } from "@/api/authService";
+import styles from "@/styles/Login"; // adjust the path based on your project structure
 
 export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {} }) {
   const router = useRouter();
@@ -31,12 +30,10 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
 
   const backgroundStyle = { backgroundColor: darkMode ? "#121212" : "#F9FAFB", flex: 1 };
 
-  // 2) Handle Auth with your new service
   const handleAuth = async () => {
     setMessage("");
     setLoading(true);
 
-    // If signing up, validate matching passwords
     if (!isLogin && password !== confirmPassword) {
       setMessage("Passwords do not match");
       setLoading(false);
@@ -46,13 +43,10 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
     try {
       let data;
       if (isLogin) {
-        // 3) Call login service
         data = await login(email, password);
         setMessage("Login successful!");
-        // Optional: store tokens/user info here (AsyncStorage, Redux, etc.)
         router.push("/(MainPage)/home");
       } else {
-        // 4) Call signup service
         data = await signup(username, email, password);
         setMessage("Sign up successful!");
         setIsLogin(true);
@@ -259,110 +253,3 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
     </SafeAreaView>
   );
 }
-
-
-
-
-const styles = StyleSheet.create({
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-  },
-  backButton: {
-    padding: 8,
-    alignSelf: "flex-start",
-  },
-  logoContainer: {
-    alignItems: "center",
-    marginTop: 20,
-    marginBottom: 40,
-  },
-  logoText: {
-    fontSize: 28,
-    fontWeight: "700",
-    marginTop: 12,
-  },
-  formContainer: {
-    width: "100%",
-  },
-  formTitle: {
-    fontSize: 28,
-    fontWeight: "700",
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  formSubtitle: {
-    fontSize: 16,
-    textAlign: "center",
-    marginBottom: 32,
-  },
-  inputsContainer: {
-    marginBottom: 24,
-  },
-  inputWrapper: {
-    marginBottom: 16,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  inputIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-  },
-  passwordToggle: {
-    position: "absolute",
-    right: 16,
-    height: 50,
-    justifyContent: "center",
-  },
-  forgotPasswordContainer: {
-    alignItems: "flex-end",
-    marginTop: 8,
-  },
-  forgotPasswordText: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  authButton: {
-    backgroundColor: "#2563EB",
-    height: 56,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 24,
-  },
-  authButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  messageText: {
-    textAlign: "center",
-    marginBottom: 16,
-    fontSize: 14,
-  },
-  switchModeContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  switchModeText: {
-    fontSize: 14,
-    marginRight: 4,
-  },
-  switchModeLink: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-});
