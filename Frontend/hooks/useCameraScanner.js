@@ -1,11 +1,16 @@
 
 import { useState, useRef } from 'react';
 import { uploadBase64, saveIngredients } from '@/api/ingredientService';
+import { useUserStore } from '@/stores/useUserStore';
 
 export default function useCameraScanner() {
   const cameraRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [gptResponse, setGptResponse] = useState(null);
+  const userId = useUserStore(state => state.user?.user_id);
+
+  console.log(userId);
+
 
   const handleTakePicture = async () => {
     if (!cameraRef.current) return;
@@ -43,7 +48,6 @@ export default function useCameraScanner() {
     if (!gptResponse || !gptResponse.ingredients) return;
     try {
       // For demonstration, the userId is hardcoded.
-      const userId = 6;
       const response = await saveIngredients(userId, gptResponse.ingredients);
       console.log('Ingredients saved:', response);
       alert('Ingredients approved and saved!');
