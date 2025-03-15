@@ -1,54 +1,52 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, SafeAreaView, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 export default function RecipeDetail() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { recipe: recipeParam } = params; // ✅ recipe param comes as a string
   
-  // Extract recipe ID from params
-  const recipeId = params.id;
-  
-  // Sample recipe data - in a real app, you would fetch this based on ID
-  const recipe = {
-    id: 1,
-    title: "Chicken Stir Fry",
-    image: "https://via.placeholder.com/600x300.png?text=Recipe+Image",
-    time: "30 min",
-    difficulty: "Easy",
-    servings: 4,
-    ingredients: [
-      "2 chicken breasts, sliced",
-      "1 cup rice",
-      "2 tomatoes, diced",
-      "1 onion, sliced",
-      "2 cloves garlic, minced",
-      "1 bell pepper, sliced",
-    ],
-    instructions: [
-      "Cook rice according to package instructions.",
-      "Heat oil in a large pan over medium-high heat.",
-      "Add chicken and cook until browned, about 5-7 minutes.",
-      "Add onions, garlic, and bell peppers. Cook for 3 minutes.",
-      "Add tomatoes and cook for another 2 minutes.",
-      "Season with salt, pepper, and your favorite spices.",
-      "Serve hot over rice.",
-    ],
-    nutrition: {
-      calories: 320,
-      protein: "28g",
-      carbs: "42g",
-      fat: "6g",
-    },
-  };
-
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('ingredients');
   const [isFavorite, setIsFavorite] = useState(false);
-
+  
   const handleFavorite = () => {
     setIsFavorite(!isFavorite);
+    // Here you would implement your favorite logic with your backend
   };
+  
+  useEffect(() => {
+    if (!recipeParam) {
+      console.warn('❌ No recipe param received!');
+      alert('No recipe found!');
+      router.back();
+      return;
+    }
+  
+    try {
+      const parsedRecipe = JSON.parse(recipeParam);
+      console.log('✅ Parsed recipe:', parsedRecipe);
+      setRecipe(parsedRecipe);
+    } catch (error) {
+      console.error('❌ Failed to parse recipe param:', error);
+      alert('Recipe data corrupted!');
+      router.back();
+    } finally {
+      setLoading(false);
+    }
+  }, [recipeParam]);
 
+  if (loading || !recipe) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <Text>Loading Recipe...</Text>
+      </View>
+    );
+  }
+  
   return (
     <SafeAreaView style={styles.container}>
       {/* Header Image */}
@@ -81,16 +79,16 @@ export default function RecipeDetail() {
 
       {/* Recipe Info Section */}
       <View style={styles.infoSection}>
-        <Text style={styles.recipeName}>{recipe.title}</Text>
+        <Text style={styles.recipeName}>{recipe.name}</Text>
         <View style={styles.badgeRow}>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{recipe.time}</Text>
+            <Text style={styles.badgeText}>60 mins</Text>
           </View>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{recipe.difficulty}</Text>
+            <Text style={styles.badgeText}>Intermediate</Text>
           </View>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{recipe.servings} servings</Text>
+            <Text style={styles.badgeText}>5 servings</Text>
           </View>
         </View>
       </View>
@@ -155,35 +153,45 @@ export default function RecipeDetail() {
         )}
 
         {activeTab === 'instructions' && (
-          <View style={styles.tabContent}>
-            {recipe.instructions.map((step, index) => (
-              <View key={index} style={styles.instructionStep}>
-                <View style={styles.stepNumber}>
-                  <Text style={styles.stepNumberText}>{index + 1}</Text>
-                </View>
-                <Text style={styles.instructionText}>{step}</Text>
-              </View>
-            ))}
+  <View style={styles.tabContent}>
+    {Array.isArray(recipe.instructions) 
+      ? recipe.instructions.map((step, index) => (
+          <View key={index} style={styles.instructionStep}>
+            <View style={styles.stepNumber}>
+              <Text style={styles.stepNumberText}>{index + 1}</Text>
+            </View>
+            <Text style={styles.instructionText}>{step}</Text>
           </View>
-        )}
+        ))
+      : recipe.instructions.split(/Step \d+: /).filter(Boolean).map((step, index) => (
+          <View key={index} style={styles.instructionStep}>
+            <View style={styles.stepNumber}>
+              <Text style={styles.stepNumberText}>{index + 1}</Text>
+            </View>
+            <Text style={styles.instructionText}>{step.trim()}</Text>
+          </View>
+        ))
+    }
+  </View>
+)}
 
         {activeTab === 'nutrition' && (
           <View style={styles.nutritionContainer}>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Calories</Text>
-              <Text style={styles.nutritionValue}>{recipe.nutrition.calories}</Text>
+              <Text style={styles.nutritionValue}>540 Calories</Text>
             </View>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Protein</Text>
-              <Text style={styles.nutritionValue}>{recipe.nutrition.protein}</Text>
+              <Text style={styles.nutritionValue}>30g</Text>
             </View>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Carbs</Text>
-              <Text style={styles.nutritionValue}>{recipe.nutrition.carbs}</Text>
+              <Text style={styles.nutritionValue}>50g</Text>
             </View>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Fat</Text>
-              <Text style={styles.nutritionValue}>{recipe.nutrition.fat}</Text>
+              <Text style={styles.nutritionValue}>20g</Text>
             </View>
           </View>
         )}
@@ -198,6 +206,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerImageContainer: {
     width: '100%',
