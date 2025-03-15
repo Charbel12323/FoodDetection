@@ -43,34 +43,51 @@ async function generateRecipes(ingredients) {
 
   // 4. Build a strong prompt for STRICT JSON output with detailed instructions
   const prompt = `
-You are an AI chef creating recipes for beginners. You MUST return valid JSON with NO additional text.
-Do not include markdown fences, code blocks, or explanations.
-
-Given these ingredients: ${ingredients.join(', ')}, create 5 recipes. 
-For each recipe, provide:
-1. "name": string
-2. "ingredients": array of strings with quantities
-3. "instructions": string with VERY DETAILED, beginner-friendly steps that include:
-   - Precise measurements for all ingredients
-   - Exact cooking temperatures (in both Fahrenheit and Celsius)
-   - Specific cooking times (e.g., "sauté for 3-4 minutes")
-   - Detailed descriptions of techniques (e.g., "dice the onion into 1/4-inch pieces")
-   - Visual cues for doneness (e.g., "until the edges turn golden brown")
-   - Heat levels (e.g., "over medium-high heat")
-
-The ONLY valid output is a JSON object of this form:
-{
-  "recipes": [
-    {
-      "name": "Example Dish",
-      "ingredients": ["1 lb chicken breast", "2 tbsp olive oil"],
-      "instructions": "Step 1: Preheat the oven to 375°F (190°C). Step 2: Cut 1 lb of chicken breast into 1-inch cubes. Step 3: Heat 2 tbsp of olive oil in a large skillet over medium-high heat for 1 minute until the oil shimmers."
-    },
-    ...
-  ]
-}
-No extra keys or text.
-`;
+  You are an AI chef creating recipes for beginners. You MUST return valid JSON with NO additional text.
+  Do not include markdown fences, code blocks, or explanations.
+  
+  Given these ingredients: ${ingredients.join(', ')}, create 5 recipes. 
+  For each recipe, provide the following fields:
+  
+  1. "name": string  
+  2. "cookingTime": string (e.g., "45 minutes")  
+  3. "difficulty": string (one of: "Easy", "Medium", "Hard")  
+  4. "servings": number (how many people it serves)  
+  5. "nutrition": object with keys:  
+     - "calories": number (per serving)  
+     - "protein": string (e.g., "20g")  
+     - "carbs": string (e.g., "30g")  
+     - "fat": string (e.g., "10g")  
+  6. "ingredients": array of strings with quantities  
+  7. "instructions": string with VERY DETAILED, beginner-friendly steps that include:  
+     - Precise measurements for all ingredients  
+     - Exact cooking temperatures (Fahrenheit and Celsius)  
+     - Specific cooking times  
+     - Detailed descriptions of techniques  
+     - Visual cues for doneness  
+     - Heat levels (e.g., "over medium-high heat")
+  
+  The ONLY valid output is a JSON object of this form:
+  {
+    "recipes": [
+      {
+        "name": "Example Dish",
+        "cookingTime": "45 minutes",
+        "difficulty": "Medium",
+        "servings": 4,
+        "nutrition": {
+          "calories": 350,
+          "protein": "25g",
+          "carbs": "15g",
+          "fat": "10g"
+        },
+        "ingredients": ["1 lb chicken breast", "2 tbsp olive oil"],
+        "instructions": "Step 1: Preheat the oven to 375°F (190°C)..."
+      }
+    ]
+  }
+  No extra keys or text.
+  `;
 
   try {
     // 5. Send the request to Gemini

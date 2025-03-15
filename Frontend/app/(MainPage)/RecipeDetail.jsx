@@ -82,13 +82,13 @@ export default function RecipeDetail() {
         <Text style={styles.recipeName}>{recipe.name}</Text>
         <View style={styles.badgeRow}>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>60 mins</Text>
+            <Text style={styles.badgeText}>{recipe.cookingTime}</Text>
           </View>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>Intermediate</Text>
+            <Text style={styles.badgeText}>{recipe.difficulty}</Text>
           </View>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>5 servings</Text>
+            <Text style={styles.badgeText}>{recipe.servings} Servings</Text>
           </View>
         </View>
       </View>
@@ -179,19 +179,19 @@ export default function RecipeDetail() {
           <View style={styles.nutritionContainer}>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Calories</Text>
-              <Text style={styles.nutritionValue}>540 Calories</Text>
+              <Text style={styles.nutritionValue}>{recipe.nutrition.calories}</Text>
             </View>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Protein</Text>
-              <Text style={styles.nutritionValue}>30g</Text>
+              <Text style={styles.nutritionValue}>{recipe.nutrition.protein}</Text>
             </View>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Carbs</Text>
-              <Text style={styles.nutritionValue}>50g</Text>
+              <Text style={styles.nutritionValue}>{recipe.nutrition.carbs}</Text>
             </View>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Fat</Text>
-              <Text style={styles.nutritionValue}>20g</Text>
+              <Text style={styles.nutritionValue}>{recipe.nutrition.fat}</Text>
             </View>
           </View>
         )}
