@@ -1,6 +1,8 @@
 // services/ingredientService.js
+import { baseURL } from "@/utilities/constants";
 
-const BASE_URL = 'http://192.168.1.66:3000';
+
+const BASE_URL = baseURL;
 
 // Upload Base64 image to the server/OpenAI
 export async function uploadBase64(photoBase64) {
@@ -46,17 +48,12 @@ export async function saveIngredients(userId, ingredients) {
 
 
 export async function getIngredients(userId) {
-  try {
-    const response = await fetch(`${BASE_URL}/api/getIngredients?userId=${userId}`);
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error || 'Failed to fetch ingredients');
-    }
-   
-    return data.ingredients || [];
-  } catch (error) {
-    console.error('Error fetching ingredients:', error);
-    throw error;
+  const response = await fetch(`${BASE_URL}/api/getIngredients?userId=${userId}`);
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch ingredients');
   }
+    console.log("ingredients data from backend:", data);
+    return data.ingredients || [];
 }
 

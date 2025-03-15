@@ -1,11 +1,15 @@
-// src/hooks/useIngredients.js
 import { useState, useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
 import { getIngredients } from '@/api/ingredientService';
+import { useUserStore } from '@/stores/useUserStore';
 
-export default function useIngredients(userId = 6) {
+export default function useIngredients() {
+  // State for fetched ingredients and loading state
   const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Get the currently logged-in userId from Zustand store
+  const userId = useUserStore((state) => state.userId);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -15,13 +19,21 @@ export default function useIngredients(userId = 6) {
     const fetchIngredients = async () => {
       try {
         setLoading(true);
+
+        if (!userId) {
+          console.warn('No userId found. Cannot fetch ingredients.');
+          return;
+        }
+
+        // Fetch ingredients for the current user
         const fetchedIngredients = await getIngredients(userId);
         setIngredients(fetchedIngredients);
       } catch (error) {
-        console.error(error);
+        console.error('Failed to fetch ingredients:', error);
       } finally {
         setLoading(false);
-        // Start animations after data loads
+
+        // Start animations after fetching ingredients
         Animated.parallel([
           Animated.timing(fadeAnim, {
             toValue: 1,
@@ -38,7 +50,7 @@ export default function useIngredients(userId = 6) {
     };
 
     fetchIngredients();
-  }, [fadeAnim, translateY, userId]);
+  }, [userId, fadeAnim, translateY]);
 
   return { ingredients, loading, fadeAnim, translateY };
 }

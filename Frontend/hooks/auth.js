@@ -1,8 +1,13 @@
-// src/hooks/useAuth.js
 import { useState } from "react";
 import { login, signup } from "@/api/authService";
+import { useUserStore } from '@/stores/useUserStore'; 
 
 export default function useAuth(router) {
+  // Zustand action to set the userId globally
+  const setUser = useUserStore(state => state.setUser);
+  console.log(setUser)
+
+  // Local state management for the auth form
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,11 +17,12 @@ export default function useAuth(router) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Function to handle login/signup
   const handleAuth = async () => {
     setMessage("");
     setLoading(true);
 
-    // For sign-up, ensure the passwords match.
+    // Basic validation for signup (confirm password)
     if (!isLogin && password !== confirmPassword) {
       setMessage("Passwords do not match");
       setLoading(false);
@@ -25,13 +31,25 @@ export default function useAuth(router) {
 
     try {
       let data;
+
       if (isLogin) {
+        // Call login API
         data = await login(email, password);
         setMessage("Login successful!");
+
+        // Set the userId globally in Zustand
+        // Set the entire user object globally in Zustand
+        setUser(data.user);
+
+
+        // Navigate to the Main Page after login
         router.push("/(MainPage)/MainPage");
       } else {
+        // Call signup API
         data = await signup(username, email, password);
         setMessage("Sign up successful!");
+
+        // Optionally auto-login or prompt user to login manually
         setIsLogin(true);
       }
     } catch (error) {
@@ -41,8 +59,9 @@ export default function useAuth(router) {
     }
   };
 
+  // Function to toggle between login/signup modes
   const toggleAuthMode = () => {
-    setIsLogin((prev) => !prev);
+    setIsLogin(prev => !prev);
     setPassword("");
     setConfirmPassword("");
     setMessage("");
