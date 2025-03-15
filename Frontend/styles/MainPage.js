@@ -6,6 +6,7 @@ const cardWidth = (width - 48) / 3;
 
 export default StyleSheet.create({
   container: {
+    flex:1,
     overflow: 'hidden',
   },
   headerGradient: {
