@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router'; // Use Expo Router's navigation
+import { useRouter } from 'expo-router';
 import { useUserStore } from '@/stores/useUserStore';
 import { getIngredients } from '@/api/ingredientService';
 import { generateRecipes } from '@/api/recipeService';
@@ -9,8 +9,8 @@ import { ScrollView, Text, View, TouchableOpacity, ActivityIndicator, StyleSheet
 
 export default function RecipeSuggestions() {
   const router = useRouter();
-
   const userId = useUserStore(state => state.user?.user_id);
+
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,23 +19,31 @@ export default function RecipeSuggestions() {
       try {
         setLoading(true);
 
-        const ingredientsData = await getIngredients(userId);
-
-        if (!ingredientsData || ingredientsData.ingredients.length === 0) {
-          alert("No ingredients found. Please scan items first!");
-          router.push('/(MainPage)/Scanner');
+        if (!userId) {
+          router.replace('/(preLogin)/login');
           return;
         }
 
-        const ingredients = ingredientsData.ingredients;
+        const ingredientsData = await getIngredients(userId);
+        console.log("ingredientsData =>", ingredientsData);
 
+        if (!ingredientsData || ingredientsData.length === 0) {
+          alert("No ingredients found. Please scan items first!");
+          router.replace('/(MainPage)/Scanner');
+          return;
+        }
+
+        const ingredients = ingredientsData;
         const recipesResponse = await generateRecipes(ingredients);
+        console.log("recipesResponse =>", recipesResponse);
 
         if (recipesResponse?.recipes?.length > 0) {
-          setRecipes(recipesResponse.recipes);
-        } else {
-          console.warn("No recipes returned.");
-        }
+            setRecipes(recipesResponse.recipes);
+            console.log("Recipes loaded:", recipesResponse.recipes); // <-- log here!
+          } else {
+            console.warn("No recipes returned.");
+          }
+
       } catch (error) {
         console.error("Error fetching recipes:", error);
       } finally {
@@ -43,11 +51,7 @@ export default function RecipeSuggestions() {
       }
     };
 
-    if (userId) {
-      fetchRecipes();
-    } else {
-      router.push('/(preLogin)/login'); // Redirect to login if no user
-    }
+    fetchRecipes();
   }, [userId]);
 
   if (loading) {
@@ -64,13 +68,13 @@ export default function RecipeSuggestions() {
       <View style={styles.header}>
         <Text style={styles.title}>Recipes Found</Text>
         <TouchableOpacity style={styles.button} onPress={() => router.push('/(MainPage)/Scanner')}>
-          <Text style={styles.buttonText}>Back to Ingredients</Text>
+          <Text style={styles.buttonText}>Scan Again</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollArea}>
         {recipes.length === 0 ? (
-          <Text>No recipes found with your ingredients.</Text>
+          <Text style={styles.noRecipesText}>No recipes found with your ingredients.</Text>
         ) : (
           recipes.map((recipe, index) => (
             <RecipeCard key={index} recipe={recipe} />
@@ -84,7 +88,8 @@ export default function RecipeSuggestions() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16
+    padding: 16,
+    backgroundColor: '#f5f5f5'
   },
   header: {
     flexDirection: 'row',
@@ -107,11 +112,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   scrollArea: {
-    gap: 12
+    paddingBottom: 20
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  noRecipesText: {
+    textAlign: 'center',
+    marginTop: 30,
+    fontSize: 16,
+    color: '#666'
   }
 });

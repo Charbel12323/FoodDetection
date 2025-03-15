@@ -1,7 +1,6 @@
-import { baseURL } from "@/utilities/constants";
+import { baseURL } from '@/utilities/constants'; // your backend URL
 
-// API call to backend Gemini recipe generator
-export async function generateRecipes(ingredients) {
+export const generateRecipes = async (ingredients) => {
   try {
     const response = await fetch(`${baseURL}/api/generate-recipes`, {
       method: 'POST',
@@ -11,15 +10,34 @@ export async function generateRecipes(ingredients) {
       body: JSON.stringify({ ingredients }),
     });
 
-    const data = await response.json(); // JSON already parsed!
-
     if (!response.ok) {
-      throw new Error(data.error || 'Failed to generate recipes');
+      throw new Error('Failed to generate recipes');
     }
 
-    return data; // this is your { recipes: [...] }
+    return await response.json();
   } catch (error) {
-    console.error('Error in recipeService generateRecipes:', error);
+    console.error('Error generating recipes:', error);
     throw error;
   }
-}
+};
+
+export const saveRecipeToFavorites = async (userId, recipe) => {
+  try {
+    const response = await fetch(`${baseURL}/api/favorites`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, recipe }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save recipe to favorites');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error saving recipe to favorites:', error);
+    throw error;
+  }
+};

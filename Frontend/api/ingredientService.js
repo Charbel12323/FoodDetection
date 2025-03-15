@@ -48,17 +48,12 @@ export async function saveIngredients(userId, ingredients) {
 
 
 export async function getIngredients(userId) {
-  try {
-    const response = await fetch(`${BASE_URL}/api/getIngredients?userId=${userId}`);
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error || 'Failed to fetch ingredients');
-    }
-   
-    return data.ingredients || [];
-  } catch (error) {
-    console.error('Error fetching ingredients:', error);
-    throw error;
+  const response = await fetch(`${BASE_URL}/api/getIngredients?userId=${userId}`);
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch ingredients');
   }
+    console.log("ingredients data from backend:", data);
+    return data.ingredients || [];
 }
 
