@@ -5,7 +5,14 @@ import { getIngredients } from '@/api/ingredientService';
 import { generateRecipes } from '@/api/recipeService';
 
 import RecipeCard from '@/components/RecipeCard';
-import { ScrollView, Text, View, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import {
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet
+} from 'react-native';
 
 export default function RecipeSuggestions() {
   const router = useRouter();
@@ -20,32 +27,34 @@ export default function RecipeSuggestions() {
         setLoading(true);
 
         if (!userId) {
+          console.warn('User not logged in, redirecting...');
           router.replace('/(preLogin)/login');
           return;
         }
 
         const ingredientsData = await getIngredients(userId);
-        console.log("ingredientsData =>", ingredientsData);
+        console.log('✅ ingredientsData =>', ingredientsData);
 
         if (!ingredientsData || ingredientsData.length === 0) {
-          alert("No ingredients found. Please scan items first!");
+          alert('No ingredients found. Please scan items first!');
           router.replace('/(MainPage)/Scanner');
           return;
         }
 
         const ingredients = ingredientsData;
         const recipesResponse = await generateRecipes(ingredients);
-        console.log("recipesResponse =>", recipesResponse);
+
+        console.log('✅ recipesResponse =>', recipesResponse);
 
         if (recipesResponse?.recipes?.length > 0) {
-            setRecipes(recipesResponse.recipes);
-            console.log("Recipes loaded:", recipesResponse.recipes); // <-- log here!
-          } else {
-            console.warn("No recipes returned.");
-          }
+          setRecipes(recipesResponse.recipes);
+          console.log('✅ Recipes loaded:', recipesResponse.recipes);
+        } else {
+          console.warn('⚠️ No recipes returned.');
+        }
 
       } catch (error) {
-        console.error("Error fetching recipes:", error);
+        console.error('❌ Error fetching recipes:', error);
       } finally {
         setLoading(false);
       }
@@ -67,14 +76,19 @@ export default function RecipeSuggestions() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Recipes Found</Text>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/(MainPage)/Scanner')}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/(MainPage)/Scanner')}
+        >
           <Text style={styles.buttonText}>Scan Again</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollArea}>
         {recipes.length === 0 ? (
-          <Text style={styles.noRecipesText}>No recipes found with your ingredients.</Text>
+          <Text style={styles.noRecipesText}>
+            No recipes found with your ingredients.
+          </Text>
         ) : (
           recipes.map((recipe, index) => (
             <RecipeCard key={index} recipe={recipe} />

@@ -5,17 +5,11 @@ export default function RecipeCard({ recipe }: { recipe: any }) {
   const router = useRouter();
 
   const handlePress = () => {
-    // Pass recipe data as URL-safe string parameters instead of trying to pass the whole object
+    // Pass the entire recipe object as a single JSON string
     router.push({
       pathname: '/(MainPage)/RecipeDetail',
       params: { 
-        id: recipe.id || 'unknown',
-        name: recipe.name || 'Unnamed Recipe',
-        difficulty: recipe.difficulty || 'Easy',
-        time: recipe.time || '30 min',
-        // Convert arrays to JSON strings for params
-        ingredients: JSON.stringify(recipe.ingredients || []),
-        instructions: recipe.instructions || "No instructions available."
+        recipe: JSON.stringify(recipe)
       }
     });
   };

@@ -1,101 +1,141 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, SafeAreaView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 export default function RecipeDetail() {
   const router = useRouter();
-  const { recipe } = useLocalSearchParams();
-
-  // Parse the recipe from route params
-  let recipeObj = {};
-  try {
-    recipeObj = JSON.parse(recipe);
-  } catch (err) {
-    console.warn('Could not parse recipe param:', err);
-  }
-
-  // Destructure fields with fallback values
-  const {
-    name = 'Recipe Title',
-    time = '30 min',
-    difficulty = 'Easy',
-    servings = 2,
-    ingredients = [],
-    instructions = 'No instructions available.',
-    nutrition = {
+  const params = useLocalSearchParams();
+  
+  // Extract recipe ID from params
+  const recipeId = params.id;
+  
+  // Sample recipe data - in a real app, you would fetch this based on ID
+  const recipe = {
+    id: 1,
+    title: "Chicken Stir Fry",
+    image: "https://via.placeholder.com/600x300.png?text=Recipe+Image",
+    time: "30 min",
+    difficulty: "Easy",
+    servings: 4,
+    ingredients: [
+      "2 chicken breasts, sliced",
+      "1 cup rice",
+      "2 tomatoes, diced",
+      "1 onion, sliced",
+      "2 cloves garlic, minced",
+      "1 bell pepper, sliced",
+    ],
+    instructions: [
+      "Cook rice according to package instructions.",
+      "Heat oil in a large pan over medium-high heat.",
+      "Add chicken and cook until browned, about 5-7 minutes.",
+      "Add onions, garlic, and bell peppers. Cook for 3 minutes.",
+      "Add tomatoes and cook for another 2 minutes.",
+      "Season with salt, pepper, and your favorite spices.",
+      "Serve hot over rice.",
+    ],
+    nutrition: {
       calories: 320,
-      protein: '25g',
-      carbs: '50g',
-      fat: '10g',
+      protein: "28g",
+      carbs: "42g",
+      fat: "6g",
     },
-  } = recipeObj;
+  };
 
   const [activeTab, setActiveTab] = useState('ingredients');
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const handleFavorite = () => {
-    console.log('Favoriting recipe:', name);
-    alert(`Favorited ${name}!`);
+    setIsFavorite(!isFavorite);
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header Image */}
       <View style={styles.headerImageContainer}>
         <Image
-          source={{
-            uri: 'https://via.placeholder.com/600x300.png?text=Recipe+Image',
-          }}
+          source={{ uri: recipe.image }}
           style={styles.headerImage}
         />
         {/* Back Button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backButtonText}>{'←'}</Text>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => router.back()}
+        >
+          <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         {/* Favorite Button */}
-        <TouchableOpacity style={styles.favoriteButton} onPress={handleFavorite}>
-          <Text style={styles.heartIcon}>♡</Text>
+        <TouchableOpacity 
+          style={[
+            styles.favoriteButton, 
+            isFavorite && styles.favoriteButtonActive
+          ]} 
+          onPress={handleFavorite}
+        >
+          <Text style={[
+            styles.heartIcon,
+            isFavorite && styles.heartIconActive
+          ]}>♡</Text>
         </TouchableOpacity>
       </View>
 
       {/* Recipe Info Section */}
       <View style={styles.infoSection}>
-        <Text style={styles.recipeName}>{name}</Text>
+        <Text style={styles.recipeName}>{recipe.title}</Text>
         <View style={styles.badgeRow}>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{time}</Text>
+            <Text style={styles.badgeText}>{recipe.time}</Text>
           </View>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{difficulty}</Text>
+            <Text style={styles.badgeText}>{recipe.difficulty}</Text>
           </View>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{servings} servings</Text>
+            <Text style={styles.badgeText}>{recipe.servings} servings</Text>
           </View>
         </View>
       </View>
 
-      {/* Tabs */}
-      <View style={styles.tabRow}>
+      {/* Tabs - Styled to match the image */}
+      <View style={styles.tabsContainer}>
         <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'ingredients' && styles.tabButtonActive]}
+          style={[
+            styles.tab,
+            activeTab === 'ingredients' ? styles.activeTab : styles.inactiveTab
+          ]}
           onPress={() => setActiveTab('ingredients')}
         >
-          <Text style={[styles.tabButtonText, activeTab === 'ingredients' && styles.tabButtonTextActive]}>
+          <Text style={[
+            styles.tabText,
+            activeTab === 'ingredients' ? styles.activeTabText : styles.inactiveTabText
+          ]}>
             Ingredients
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'instructions' && styles.tabButtonActive]}
+          style={[
+            styles.tab,
+            activeTab === 'instructions' ? styles.activeTab : styles.inactiveTab
+          ]}
           onPress={() => setActiveTab('instructions')}
         >
-          <Text style={[styles.tabButtonText, activeTab === 'instructions' && styles.tabButtonTextActive]}>
+          <Text style={[
+            styles.tabText,
+            activeTab === 'instructions' ? styles.activeTabText : styles.inactiveTabText
+          ]}>
             Instructions
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'nutrition' && styles.tabButtonActive]}
+          style={[
+            styles.tab,
+            activeTab === 'nutrition' ? styles.activeTab : styles.inactiveTab
+          ]}
           onPress={() => setActiveTab('nutrition')}
         >
-          <Text style={[styles.tabButtonText, activeTab === 'nutrition' && styles.tabButtonTextActive]}>
+          <Text style={[
+            styles.tabText,
+            activeTab === 'nutrition' ? styles.activeTabText : styles.inactiveTabText
+          ]}>
             Nutrition
           </Text>
         </TouchableOpacity>
@@ -105,21 +145,25 @@ export default function RecipeDetail() {
       <ScrollView style={styles.tabContentContainer}>
         {activeTab === 'ingredients' && (
           <View style={styles.tabContent}>
-            {ingredients.length === 0 ? (
-              <Text style={styles.placeholderText}>No ingredients info</Text>
-            ) : (
-              ingredients.map((ing, index) => (
-                <Text key={index} style={styles.ingredientItem}>
-                  • {ing}
-                </Text>
-              ))
-            )}
+            {recipe.ingredients.map((ingredient, index) => (
+              <View key={index} style={styles.ingredientItem}>
+                <View style={styles.bulletPoint} />
+                <Text style={styles.ingredientText}>{ingredient}</Text>
+              </View>
+            ))}
           </View>
         )}
 
         {activeTab === 'instructions' && (
           <View style={styles.tabContent}>
-            <Text style={styles.instructionsText}>{instructions}</Text>
+            {recipe.instructions.map((step, index) => (
+              <View key={index} style={styles.instructionStep}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>{index + 1}</Text>
+                </View>
+                <Text style={styles.instructionText}>{step}</Text>
+              </View>
+            ))}
           </View>
         )}
 
@@ -127,28 +171,28 @@ export default function RecipeDetail() {
           <View style={styles.nutritionContainer}>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Calories</Text>
-              <Text style={styles.nutritionValue}>{nutrition.calories}</Text>
+              <Text style={styles.nutritionValue}>{recipe.nutrition.calories}</Text>
             </View>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Protein</Text>
-              <Text style={styles.nutritionValue}>{nutrition.protein}</Text>
+              <Text style={styles.nutritionValue}>{recipe.nutrition.protein}</Text>
             </View>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Carbs</Text>
-              <Text style={styles.nutritionValue}>{nutrition.carbs}</Text>
+              <Text style={styles.nutritionValue}>{recipe.nutrition.carbs}</Text>
             </View>
             <View style={styles.nutritionBox}>
               <Text style={styles.nutritionLabel}>Fat</Text>
-              <Text style={styles.nutritionValue}>{nutrition.fat}</Text>
+              <Text style={styles.nutritionValue}>{recipe.nutrition.fat}</Text>
             </View>
           </View>
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
-const HEADER_HEIGHT = 200;
+const HEADER_HEIGHT = 260;
 
 const styles = StyleSheet.create({
   container: {
@@ -159,7 +203,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: HEADER_HEIGHT,
     position: 'relative',
-    backgroundColor: '#ccc',
   },
   headerImage: {
     width: '100%',
@@ -170,9 +213,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     left: 16,
-    backgroundColor: '#ffffffaa',
-    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: 10,
     borderRadius: 20,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   backButtonText: {
     fontSize: 18,
@@ -182,94 +229,146 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     right: 16,
-    backgroundColor: '#ffffffaa',
-    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: 10,
     borderRadius: 20,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  favoriteButtonActive: {
+    backgroundColor: '#4CAF50',
   },
   heartIcon: {
     fontSize: 18,
     color: '#f00',
+  },
+  heartIconActive: {
+    color: '#fff',
   },
   infoSection: {
     backgroundColor: '#4CAF50',
     padding: 16,
   },
   recipeName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   badgeRow: {
     flexDirection: 'row',
-    gap: 8,
+    flexWrap: 'wrap',
   },
   badge: {
-    backgroundColor: '#ffffff33',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderRadius: 12,
     marginRight: 8,
+    marginBottom: 4,
   },
   badgeText: {
     color: '#fff',
     fontSize: 12,
     fontWeight: '600',
   },
-  tabRow: {
+  // New tab styling to match the image exactly
+  tabsContainer: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomWidth: 0,
+    backgroundColor: '#f5f5f5',
   },
-  tabButton: {
+  tab: {
     flex: 1,
+    paddingVertical: 16,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 12,
   },
-  tabButtonActive: {
-    borderBottomWidth: 3,
-    borderBottomColor: '#4CAF50',
+  activeTab: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#dddddd',
+    borderBottomWidth: 0,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
   },
-  tabButtonText: {
-    color: '#666',
+  inactiveTab: {
+    backgroundColor: '#f5f5f5',
+  },
+  tabText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
-  tabButtonTextActive: {
-    color: '#4CAF50',
+  activeTabText: {
+    color: '#000000',
+  },
+  inactiveTabText: {
+    color: '#888888',
   },
   tabContentContainer: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#ffffff',
   },
   tabContent: {
-    marginBottom: 50,
+    marginBottom: 20,
   },
   ingredientItem: {
-    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  bulletPoint: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#4CAF50',
+    marginRight: 10,
+  },
+  ingredientText: {
     fontSize: 16,
     color: '#333',
   },
-  instructionsText: {
+  instructionStep: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    alignItems: 'flex-start',
+  },
+  stepNumber: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#4CAF50',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+    marginTop: 2,
+  },
+  stepNumberText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  instructionText: {
+    flex: 1,
     fontSize: 16,
     lineHeight: 24,
     color: '#333',
   },
-  placeholderText: {
-    fontStyle: 'italic',
-    color: '#999',
-  },
   nutritionContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    justifyContent: 'space-between',
   },
   nutritionBox: {
-    width: '45%',
+    width: '48%',
     backgroundColor: '#f7f7f7',
     borderRadius: 8,
     padding: 16,
     marginBottom: 12,
+    alignItems: 'center',
   },
   nutritionLabel: {
     fontSize: 14,
@@ -277,7 +376,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   nutritionValue: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
   },
