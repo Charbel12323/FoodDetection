@@ -16,18 +16,24 @@ export default function useCameraScanner() {
 
   const handleTakePicture = async () => {
     if (!cameraRef.current) return;
+  
     try {
       setLoading(true);
       const photo = await cameraRef.current.takePictureAsync({ base64: true });
       console.log('Photo taken:', photo);
-
+  
       const result = await uploadBase64(photo.base64);
       console.log('Scan result:', result);
-
+  
+      // 1) If the response is wrapped in `result.data` with an `ingredients` array
       if (result.data && result.data.ingredients) {
         setGptResponse(result.data);
+  
+      // 2) If the top-level `result` itself has an `ingredients` array
       } else if (result.ingredients) {
         setGptResponse(result);
+  
+      // 3) If the JSON string is in `result.message.content`
       } else if (result.message && result.message.content) {
         const rawResponse = result.message.content;
         try {
@@ -36,6 +42,8 @@ export default function useCameraScanner() {
         } catch (error) {
           console.error('Error parsing GPT response as JSON:', error);
         }
+  
+      // 4) If none of the above conditions match
       } else {
         console.error('Unexpected response format:', result);
       }
@@ -45,6 +53,7 @@ export default function useCameraScanner() {
       setLoading(false);
     }
   };
+  
 
   const handleApprove = async () => {
     if (!gptResponse || !gptResponse.ingredients) return;

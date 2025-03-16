@@ -1,7 +1,7 @@
-import { baseURL } from "@/utilities/constants";
+
 
 // services/authService.js
-const BASE_URL = baseURL; 
+const BASE_URL = "http://192.168.1.66:3000"; 
 // or wherever your Express server runs
 
 export async function login(email, password) {
