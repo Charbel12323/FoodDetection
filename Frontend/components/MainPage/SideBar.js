@@ -104,6 +104,10 @@ export default function SideBar() {
     if (id === 'Inventory') {
       router.push('/(Inventory)/Inventory');
     }
+
+    else if (id === 'Home') {
+      router.push('/(MainPage)/MainPage');
+    }
     // Auto-close on mobile
     if (Platform.OS !== 'web') {
       setTimeout(closeSidebar, 300);
