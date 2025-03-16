@@ -9,7 +9,7 @@ import styles from '@/styles/MainPage';
 
 function Header() {
   // Use our custom hook to fetch ingredients and manage animations
-  const { ingredients, fadeAnim, translateY } = useIngredients(6);
+  const { ingredients, fadeAnim, translateY } = useIngredients();
 
   // Calculate the number of unique ingredients
   const uniqueIngredients = new Set(ingredients).size;

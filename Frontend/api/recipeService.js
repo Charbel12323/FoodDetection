@@ -1,8 +1,9 @@
-import { baseURL } from '@/utilities/constants'; // your backend URL
+const BASE_URL = "http://192.168.1.66:3000"; 
+
 
 export const generateRecipes = async (ingredients) => {
   try {
-    const response = await fetch(`${baseURL}/api/generate-recipes`, {
+    const response = await fetch(`${BASE_URL}/api/generate-recipes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
