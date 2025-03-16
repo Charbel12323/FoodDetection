@@ -1,18 +1,10 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Platform, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useUserStore } from '@/stores/useUserStore';
 import { getIngredients } from '@/api/ingredientService';
 import { generateRecipes } from '@/api/recipeService';
-
 import RecipeCard from '@/components/RecipeCard';
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-  StyleSheet
-} from 'react-native';
 
 export default function RecipeSuggestions() {
   const router = useRouter();
@@ -65,54 +57,63 @@ export default function RecipeSuggestions() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4CAF50" />
-        <Text>Loading recipes...</Text>
-      </View>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#4CAF50" />
+          <Text>Loading recipes...</Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        {/* Back Button */}
-        <TouchableOpacity
-          onPress={() => router.push('/(MainPage)/MainPage')}
-          style={styles.backButton}
-        >
-          <Text style={styles.backButtonText}>Back</Text>
-        </TouchableOpacity>
-        
-        <Text style={styles.title}>Recipes Found</Text>
-        
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => router.push('/(MainPage)/Scanner')}
-        >
-          <Text style={styles.buttonText}>Scan Again</Text>
-        </TouchableOpacity>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          {/* Back Button */}
+          <TouchableOpacity
+            onPress={() => router.push('/(MainPage)/MainPage')}
+            style={styles.backButton}
+          >
+            <Text style={styles.backButtonText}>Back</Text>
+          </TouchableOpacity>
+          
+          <Text style={styles.title}>Recipes Found</Text>
+          
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push('/(MainPage)/Scanner')}
+          >
+            <Text style={styles.buttonText}>Scan Again</Text>
+          </TouchableOpacity>
+        </View>
 
-      <ScrollView contentContainerStyle={styles.scrollArea}>
-        {recipes.length === 0 ? (
-          <Text style={styles.noRecipesText}>
-            No recipes found with your ingredients.
-          </Text>
-        ) : (
-          recipes.map((recipe, index) => (
-            <RecipeCard key={index} recipe={recipe} />
-          ))
-        )}
-      </ScrollView>
-    </View>
+        <ScrollView contentContainerStyle={styles.scrollArea}>
+          {recipes.length === 0 ? (
+            <Text style={styles.noRecipesText}>
+              No recipes found with your ingredients.
+            </Text>
+          ) : (
+            recipes.map((recipe, index) => (
+              <RecipeCard key={index} recipe={recipe} />
+            ))
+          )}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    // Optional: if your status bar isn't automatically managed, you can add padding top.
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  },
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5'
   },
   header: {
     flexDirection: 'row',
@@ -137,24 +138,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 8
+    borderRadius: 8,
   },
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   scrollArea: {
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   noRecipesText: {
     textAlign: 'center',
     marginTop: 30,
     fontSize: 16,
-    color: '#666'
-  }
+    color: '#666',
+  },
 });
