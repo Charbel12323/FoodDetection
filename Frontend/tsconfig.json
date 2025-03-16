@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "app/(MainPage)/Scanner.js"  ]
+, "app/(MainPage)/Scanner.js", "app/(RecipePage)/RecipeDetails.js"  ]
 }

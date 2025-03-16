@@ -75,7 +75,16 @@ export default function RecipeSuggestions() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        {/* Back Button */}
+        <TouchableOpacity
+          onPress={() => router.push('/(MainPage)/MainPage')}
+          style={styles.backButton}
+        >
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+        
         <Text style={styles.title}>Recipes Found</Text>
+        
         <TouchableOpacity
           style={styles.button}
           onPress={() => router.push('/(MainPage)/Scanner')}
@@ -107,13 +116,22 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 16,
-    alignItems: 'center'
+  },
+  backButton: {
+    padding: 8,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#4CAF50',
   },
   title: {
+    flex: 1,
     fontSize: 24,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#4CAF50',
