@@ -11,7 +11,7 @@ export default function Layout() {
     >
      
       <Stack.Screen
-        name="RecipeDetail"
+        name="RecipeDetails"
         options={{ title: 'Recipe Detail' }}
       />
       <Stack.Screen
