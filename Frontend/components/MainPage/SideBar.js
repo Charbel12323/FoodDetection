@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   View, 
   Text, 
@@ -6,10 +6,8 @@ import {
   TouchableWithoutFeedback, 
   Animated, 
   Dimensions, 
-  Platform
+  Platform 
 } from 'react-native';
-
-// Feather icons
 import { 
   Home, 
   ShoppingCart, 
@@ -17,16 +15,15 @@ import {
   Settings, 
   LogOut, 
   Menu, 
-  X
+  X 
 } from 'react-native-feather';
+import styles from '@/styles/SideBarStyle'; // Adjust the path as needed
+import { useRouter } from 'expo-router';
 
-// Import your styles from a separate file
-import styles from '@/styles/SideBarStyle';  // Adjust the path as needed
-
-const { width } = Dimensions.get('window');
 const SIDEBAR_WIDTH = 280;
 
 export default function SideBar() {
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [activeItem, setActiveItem] = useState('Home');
 
@@ -101,9 +98,12 @@ export default function SideBar() {
     });
   };
 
-  // Handle item press
+  // Handle item press and navigate if Inventory is selected
   const handleItemPress = (id) => {
     setActiveItem(id);
+    if (id === 'Inventory') {
+      router.push('/(Inventory)/Inventory');
+    }
     // Auto-close on mobile
     if (Platform.OS !== 'web') {
       setTimeout(closeSidebar, 300);
@@ -111,7 +111,8 @@ export default function SideBar() {
   };
 
   return (
-    <View style={styles.container}>
+    // The pointerEvents="box-none" here ensures the container itself doesn’t block touches.
+    <View style={styles.container} pointerEvents="box-none">
       {/* Menu Button */}
       <TouchableOpacity 
         onPress={toggleSidebar} 
@@ -142,10 +143,7 @@ export default function SideBar() {
 
       {/* Sidebar */}
       <Animated.View 
-        style={[
-          styles.sidebar, 
-          { transform: [{ translateX: slideAnim }] }
-        ]}
+        style={[styles.sidebar, { transform: [{ translateX: slideAnim }] }]}
       >
         {/* Profile Section */}
         <View style={styles.profileSection}>
