@@ -62,7 +62,7 @@ export default function useCameraScanner() {
       const response = await saveIngredients(userId, gptResponse.ingredients);
       console.log('Ingredients saved:', response);
       alert('Ingredients approved and saved!');
-      router.push('/(MainPage)/RecipeSuggestions'); 
+      router.push('/(RecipePage)/RecipeSuggestion'); 
     } catch (error) {
       alert('Error saving ingredients');
       console.error('Error approving ingredients:', error);

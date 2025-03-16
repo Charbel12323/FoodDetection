@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, SafeAreaView, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-export default function RecipeDetail() {
+export default function RecipeDetails() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { recipe: recipeParam } = params; // ✅ recipe param comes as a string

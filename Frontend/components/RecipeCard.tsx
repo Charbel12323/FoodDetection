@@ -7,7 +7,7 @@ export default function RecipeCard({ recipe }: { recipe: any }) {
   const handlePress = () => {
     // Pass the entire recipe object as a single JSON string
     router.push({
-      pathname: '/(MainPage)/RecipeDetail',
+      pathname: '/(RecipePage)/RecipeDetails',
       params: { 
         recipe: JSON.stringify(recipe)
       }
