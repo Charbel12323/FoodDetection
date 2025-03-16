@@ -56,3 +56,21 @@ export async function getIngredients(userId) {
     return data.ingredients || [];
 }
 
+
+export async function deleteIngredient(userId, ingredient) {
+  try {
+    const response = await fetch(`${BASE_URL}/api/deleteIngredient`, {
+      method: 'POST', // or 'DELETE' if you prefer and update your backend accordingly
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, ingredient }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to delete ingredient');
+    }
+    return data;
+  } catch (error) {
+    console.error('Error deleting ingredient:', error);
+    throw error;
+  }
+}

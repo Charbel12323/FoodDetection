@@ -4,7 +4,7 @@ import { getIngredients } from '@/api/ingredientService';
 import { useUserStore } from '@/stores/useUserStore';
 
 export default function useIngredients() {
-  const [ingredients, setIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Access userId from the user object
@@ -59,5 +59,5 @@ export default function useIngredients() {
     return () => clearInterval(interval);
   }, [userId]);
 
-  return { ingredients, loading, fadeAnim, translateY };
+  return { ingredients, setIngredients, loading, fadeAnim, translateY };
 }
