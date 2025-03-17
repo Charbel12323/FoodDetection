@@ -1,6 +1,7 @@
 // src/screens/LoginScreen.js
 import React from "react";
 import { SafeAreaView, ScrollView, StatusBar, KeyboardAvoidingView, Platform, TouchableOpacity, View } from "react-native";
+import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from "expo-router";
 import { ScanLine, ArrowLeft } from "lucide-react-native";
 import styles from "@/styles/Login";
@@ -8,6 +9,7 @@ import useAuth from "@/hooks/auth";
 import AuthForm from "@/components/Login/AuthForm";
 
 export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {} }) {
+  const setUser = useUserStore((state) => state.setUser);
   const router = useRouter();
   const authState = useAuth(router);
 

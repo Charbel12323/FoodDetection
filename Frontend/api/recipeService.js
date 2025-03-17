@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.1.66:3000"; 
+const BASE_URL = "http://192.168.1.67:3000"; 
 
 export const generateRecipes = async (ingredients) => {
   try {

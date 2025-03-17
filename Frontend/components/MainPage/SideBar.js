@@ -1,4 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useUserStore } from '@/stores/useUserStore';
+import styles from '@/styles/SideBarStyle';
 import { 
   View, 
   Text, 
@@ -6,8 +8,10 @@ import {
   TouchableWithoutFeedback, 
   Animated, 
   Dimensions, 
-  Platform 
+  Platform
 } from 'react-native';
+
+// Feather icons
 import { 
   Home, 
   ShoppingCart, 
@@ -15,15 +19,17 @@ import {
   Settings, 
   LogOut, 
   Menu, 
-  X 
+  X
 } from 'react-native-feather';
-import styles from '@/styles/SideBarStyle'; // Adjust the path as needed
-import { useRouter } from 'expo-router';
 
+// Import your styles from a separate file
+// import styles from '@/styles/SideBarStyle';  // Adjust the path as needed
+
+const { width } = Dimensions.get('window');
 const SIDEBAR_WIDTH = 280;
 
 export default function SideBar() {
-  const router = useRouter();
+  const user = useUserStore((state) => state.user);
   const [isVisible, setIsVisible] = useState(false);
   const [activeItem, setActiveItem] = useState('Home');
 
@@ -35,7 +41,7 @@ export default function SideBar() {
   const menuItems = [
     { id: 'Home', icon: Home, label: 'Home' },
     { id: 'Inventory', icon: ShoppingCart, label: 'Inventory' },
-    { id: 'Recipes', icon: Heart, label: 'Recipes' },
+    { id: 'Favorites', icon: Heart, label: 'Favorites' },
   ];
 
   const footerItems = [
@@ -98,18 +104,9 @@ export default function SideBar() {
     });
   };
 
-  // Handle item press and navigate if Inventory is selected
+  // Handle item press
   const handleItemPress = (id) => {
     setActiveItem(id);
-    if (id === 'Inventory') {
-      router.push('/(Inventory)/Inventory');
-    }
-
-    else if (id === 'Home') {
-      router.push('/(MainPage)/MainPage');
-    } else if (id === 'Recipes') {
-      router.push('/(Recipes)/Recipes'); // New route for recipes page
-    }
     // Auto-close on mobile
     if (Platform.OS !== 'web') {
       setTimeout(closeSidebar, 300);
@@ -117,8 +114,7 @@ export default function SideBar() {
   };
 
   return (
-    // The pointerEvents="box-none" here ensures the container itself doesn’t block touches.
-    <View style={styles.container} pointerEvents="box-none">
+    <View style={styles.container}>
       {/* Menu Button */}
       <TouchableOpacity 
         onPress={toggleSidebar} 
@@ -149,12 +145,15 @@ export default function SideBar() {
 
       {/* Sidebar */}
       <Animated.View 
-        style={[styles.sidebar, { transform: [{ translateX: slideAnim }] }]}
+        style={[
+          styles.sidebar, 
+          { transform: [{ translateX: slideAnim }] }
+        ]}
       >
         {/* Profile Section */}
         <View style={styles.profileSection}>
-          <Text style={styles.profileName}>Emma Johnson</Text>
-          <Text style={styles.profileEmail}>emma@example.com</Text>
+        <Text style={styles.profileName}>{user?.username || "Emma Johnson"}</Text>
+        <Text style={styles.profileEmail}>{user?.email || "emma@example.com"}</Text>
         </View>
 
         {/* Menu Items */}
