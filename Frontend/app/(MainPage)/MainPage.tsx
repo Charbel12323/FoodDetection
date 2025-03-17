@@ -4,7 +4,6 @@ import Header from '@/components/MainPage/Header'; // Adjust the path based on y
 import styles from '@/styles/MainPage'; // We reuse container style from MainPage
 import  Sidebar from '@/components/MainPage/SideBar';
 import { useUserStore } from '@/stores/useUserStore';
-import RecipeSection from "@/components/MainPage/RecipeSection"
 export default function App() {
 
   const loadUser = useUserStore((state) => state.loadUser);
@@ -16,7 +15,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0F2027" />
       <Header />
-      <RecipeSection />
+
       <Sidebar />
     </SafeAreaView>
   );

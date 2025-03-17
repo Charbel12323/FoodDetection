@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useUserStore } from '@/stores/useUserStore';
 import { getIngredients } from '@/api/ingredientService';
 import { generateRecipes } from '@/api/recipeService';
-import RecipeCard from '@/components/RecipeCard';
+import RecipeCard from '@/components/RecipePage/RecipeCard';
 
 export default function RecipeSuggestions() {
   const router = useRouter();
