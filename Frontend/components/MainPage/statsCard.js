@@ -2,10 +2,9 @@
 import React from 'react';
 import { Text, TouchableOpacity, Animated, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Layers } from 'lucide-react-native';
 import styles from '@/styles/MainPage';
 
-export default function StatsCard({ uniqueIngredients, fadeAnim, translateY }) {
+export default function StatsCard({ icon: Icon, value, title, fadeAnim, translateY, onPress }) {
   return (
     <Animated.View 
       style={[
@@ -16,7 +15,7 @@ export default function StatsCard({ uniqueIngredients, fadeAnim, translateY }) {
         }
       ]}
     >
-      <TouchableOpacity activeOpacity={0.9}>
+      <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
         <LinearGradient
           colors={['#0BAB64', '#3BB78F']}
           start={{ x: 0, y: 0 }}
@@ -24,10 +23,10 @@ export default function StatsCard({ uniqueIngredients, fadeAnim, translateY }) {
           style={styles.card}
         >
           <View style={styles.cardIconContainer}>
-            <Layers size={24} color="#FFFFFF" />
+            <Icon size={24} color="#FFFFFF" />
           </View>
-          <Text style={styles.cardValue}>{uniqueIngredients}</Text>
-          <Text style={styles.cardTitle}>Unique Items</Text>
+          <Text style={styles.cardValue}>{value}</Text>
+          <Text style={styles.cardTitle}>{title}</Text>
         </LinearGradient>
       </TouchableOpacity>
     </Animated.View>

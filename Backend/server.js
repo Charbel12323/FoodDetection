@@ -11,7 +11,7 @@ const ingredientRoutes = require('./routes/ingredientRoutes');
 const openaiRoutes = require('./routes/openaiRoutes');
 // If you have Gemini integration, uncomment the next line:
 const geminiRoutes = require('./routes/geminiRoutes');
-
+const recipeRoutes = require('./routes/recipeRoutes');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -42,6 +42,7 @@ app.use('/api', ingredientRoutes);
 app.use('/api', openaiRoutes);
 // If using Gemini, register its routes:
 app.use('/api', geminiRoutes);
+app.use('/api', recipeRoutes);
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}`);
