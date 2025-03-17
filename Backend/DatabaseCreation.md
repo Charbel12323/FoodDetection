@@ -39,6 +39,27 @@ CREATE TABLE user_ingredients (
 );
 ```
 
+## 4. Create the recipe table to store Recipes
+```sql
+CREATE TABLE recipes (
+  recipe_id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  cooking_time VARCHAR(50),
+  difficulty VARCHAR(50),
+  servings INTEGER,
+  nutrition JSONB,
+  instructions TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT fk_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(user_id)
+    ON DELETE CASCADE
+);
+```
+
+
 ## 4. Verify Tables
 After executing the above commands, verify the tables were created correctly:
 ```sql
