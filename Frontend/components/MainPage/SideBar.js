@@ -35,7 +35,7 @@ export default function SideBar() {
   const menuItems = [
     { id: 'Home', icon: Home, label: 'Home' },
     { id: 'Inventory', icon: ShoppingCart, label: 'Inventory' },
-    { id: 'Favorites', icon: Heart, label: 'Favorites' },
+    { id: 'Recipes', icon: Heart, label: 'Recipes' },
   ];
 
   const footerItems = [
@@ -107,6 +107,8 @@ export default function SideBar() {
 
     else if (id === 'Home') {
       router.push('/(MainPage)/MainPage');
+    } else if (id === 'Recipes') {
+      router.push('/(Recipes)/Recipes'); // New route for recipes page
     }
     // Auto-close on mobile
     if (Platform.OS !== 'web') {
