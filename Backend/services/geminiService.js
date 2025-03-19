@@ -1,3 +1,4 @@
+const { fetchRecipeImage } = require('./spoonacularService.js');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
@@ -93,7 +94,6 @@ async function generateRecipes(ingredients) {
     // 5. Send the request to Gemini
     const result = await model.generateContent(prompt);
     const response = result.response;
-    
     // The text is available directly from response.text()
     const text = response.text();
     
@@ -148,6 +148,21 @@ async function generateRecipes(ingredients) {
         };
       }
     }
+
+    // --- NEW CODE: Attach images to each recipe ---
+    if (data && data.recipes && Array.isArray(data.recipes)) {
+      const recipesWithImages = await Promise.all(
+        data.recipes.map(async (recipe) => {
+          const imageUrl = await fetchRecipeImage(recipe.name);
+          return {
+            ...recipe,
+            image: imageUrl || null
+          };
+        })
+      );
+      data.recipes = recipesWithImages;
+    }
+    // --- END NEW CODE ---
 
     return data;
   } catch (error) {
