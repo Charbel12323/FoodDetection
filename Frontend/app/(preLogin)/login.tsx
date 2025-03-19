@@ -18,16 +18,9 @@ export default function LoginScreen({ darkMode = true, toggleDarkMode = () => {}
       <StatusBar barStyle={darkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle} contentContainerStyle={styles.scrollContent}>
-          {/* Back Button */}
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <ArrowLeft size={24} color={darkMode ? "#60A5FA" : "#2563EB"} />
-          </TouchableOpacity>
+         
 
-          {/* Logo */}
-          <View style={styles.logoContainer}>
-            <ScanLine size={40} color={darkMode ? "#60A5FA" : "#2563EB"} />
-          </View>
-
+         
           {/* Authentication Form */}
           <AuthForm darkMode={darkMode} authState={authState} />
         </ScrollView>

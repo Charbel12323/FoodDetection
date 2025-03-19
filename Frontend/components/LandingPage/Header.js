@@ -10,7 +10,7 @@ export default function Header({ darkMode, toggleDarkMode }) {
       <View style={styles.logoContainer}>
         <ScanLine size={24} color={darkMode ? "#60A5FA" : "#2563EB"} />
         <Text style={[styles.logoText, { color: darkMode ? "#FFFFFF" : "#111827" }]}>
-          FridgeScan
+          FridgeBud
         </Text>
       </View>
       <View style={styles.headerRight}>
