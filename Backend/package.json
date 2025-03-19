@@ -1,4 +1,6 @@
 {
+  "name": "backend",
+  "version": "1.0.0",
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
     "axios": "^1.8.3",
@@ -10,5 +12,9 @@
     "ngrok": "^5.0.0-beta.2",
     "openai": "^4.86.1",
     "pg": "^8.13.3"
+  },
+  "scripts": {
+    "start": "node server.js" 
+  
   }
 }
