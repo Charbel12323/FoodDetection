@@ -1,6 +1,5 @@
 // services/ingredientService.js
 
-import { baseURL } from "@/utilities/constants";
 
 
 const BASE_URL = "https://fooddetection-production.up.railway.app";
