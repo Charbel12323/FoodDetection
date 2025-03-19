@@ -1,4 +1,6 @@
-const BASE_URL = "http://192.168.1.66:3000"; 
+import { baseURL } from "@/utilities/constants";
+
+const BASE_URL = baseURL; 
 
 export const generateRecipes = async (ingredients) => {
   try {
