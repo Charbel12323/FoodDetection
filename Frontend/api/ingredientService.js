@@ -1,7 +1,7 @@
 // services/ingredientService.js
 
 
-const BASE_URL = "http://192.168.1.66:3000"; 
+const BASE_URL = "https://fooddetection-production.up.railway.app";
 
 // Upload Base64 image to the server/OpenAI
 export async function uploadBase64(photoBase64) {
