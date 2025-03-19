@@ -3,6 +3,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
+
 export default StyleSheet.create({
   container: {
     flex: 1,
@@ -78,6 +79,28 @@ export default StyleSheet.create({
     marginTop: 15,
     fontSize: 16,
     fontWeight: '500',
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.7)', // Dimmed background
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  loadingBox: {
+    backgroundColor: '#80858a',
+    borderRadius: 20,
+    padding: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 10,
   },
   
   // Permission screen styles
@@ -233,4 +256,5 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-});
+}
+);
