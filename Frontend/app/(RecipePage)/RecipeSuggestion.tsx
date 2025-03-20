@@ -1,22 +1,240 @@
-// src/pages/(MainPage)/RecipeSuggestions.tsx
+// // src/pages/(MainPage)/RecipeSuggestions.tsx
+// import React, { useEffect, useState } from 'react';
+// import {
+//   SafeAreaView,
+//   ScrollView,
+//   Text,
+//   View,
+//   TouchableOpacity,
+//   ActivityIndicator,
+//   StyleSheet,
+//   Platform,
+//   StatusBar,
+//   Dimensions,
+// } from 'react-native';
+// import { useRouter } from 'expo-router';
+// import { useUserStore } from '@/stores/useUserStore';
+// import { getIngredients } from '@/api/ingredientService';
+// import { generateRecipes } from '@/api/recipeService';
+// import RecipeCard from '@/components/RecipePage/RecipeCard';
+
+// export default function RecipeSuggestions() {
+//   const router = useRouter();
+//   const userId = useUserStore(state => state.user?.user_id);
+
+//   const [recipes, setRecipes] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   // Number of columns: 3 (≥1200px), 2 (800–1199px), 1 (<800px)
+//   const [columnCount, setColumnCount] = useState(1);
+
+//   useEffect(() => {
+//     // Decide how many columns to show based on window width
+//     const determineColumns = (width: number) => {
+//       if (width >= 1200) return 3;
+//       if (width >= 800) return 2;
+//       return 1;
+//     };
+
+//     // Initial calculation
+//     const { width } = Dimensions.get('window');
+//     setColumnCount(determineColumns(width));
+
+//     // Listen for window size changes
+//     const subscription = Dimensions.addEventListener('change', ({ window }) => {
+//       setColumnCount(determineColumns(window.width));
+//     });
+//     return () => subscription?.remove();
+//   }, []);
+
+//   useEffect(() => {
+//     const fetchRecipes = async () => {
+//       try {
+//         setLoading(true);
+
+//         if (!userId) {
+//           console.warn('User not logged in, redirecting...');
+//           router.replace('/(preLogin)/login');
+//           return;
+//         }
+
+//         const ingredientsData = await getIngredients(userId);
+//         console.log('✅ ingredientsData =>', ingredientsData);
+
+//         if (!ingredientsData || ingredientsData.length === 0) {
+//           alert('No ingredients found. Please scan items first!');
+//           router.replace('/(MainPage)/Scanner');
+//           return;
+//         }
+
+//         const recipesResponse = await generateRecipes(ingredientsData);
+
+//         console.log('✅ recipesResponse =>', recipesResponse);
+
+//         if (recipesResponse?.recipes?.length > 0) {
+//           setRecipes(recipesResponse.recipes);
+//           console.log('✅ Recipes loaded:', recipesResponse.recipes);
+//         } else {
+//           console.warn('⚠️ No recipes returned.');
+//         }
+//       } catch (error) {
+//         console.error('❌ Error fetching recipes:', error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchRecipes();
+//   }, [userId]);
+
+//   if (loading) {
+//     return (
+//       <SafeAreaView style={styles.safeArea}>
+//         <View style={styles.loadingContainer}>
+//           <ActivityIndicator size="large" color="#4CAF50" />
+//           <Text>Loading recipes...</Text>
+//         </View>
+//       </SafeAreaView>
+//     );
+//   }
+
+//   return (
+//     <SafeAreaView style={styles.safeArea}>
+//       <View style={styles.container}>
+//         <View style={styles.header}>
+//           {/* Back Button */}
+//           <TouchableOpacity
+//             onPress={() => router.push('/(MainPage)/MainPage')}
+//             style={styles.backButton}
+//           >
+//             <Text style={styles.backButtonText}>Back</Text>
+//           </TouchableOpacity>
+
+//           <Text style={styles.title}>Recipes Found</Text>
+
+//           <TouchableOpacity
+//             style={styles.button}
+//             onPress={() => router.push('/(MainPage)/Scanner')}
+//           >
+//             <Text style={styles.buttonText}>Scan Again</Text>
+//           </TouchableOpacity>
+//         </View>
+
+//         <ScrollView contentContainerStyle={styles.scrollArea}>
+//           {recipes.length === 0 ? (
+//             <Text style={styles.noRecipesText}>
+//               No recipes found with your ingredients.
+//             </Text>
+//           ) : (
+//             <View style={layoutStyles.grid}>
+//               {recipes.map((recipe, index) => (
+//                 <View
+//                   key={index}
+//                   style={[
+//                     layoutStyles.cardContainer,
+//                     { width: `${100 / columnCount}%` },
+//                   ]}
+//                 >
+//                   <RecipeCard recipe={recipe} />
+//                 </View>
+//               ))}
+//             </View>
+//           )}
+//         </ScrollView>
+//       </View>
+//     </SafeAreaView>
+//   );
+// }
+
+// //
+// // LAYOUT STYLES
+// //
+// const layoutStyles = StyleSheet.create({
+//   grid: {
+//     flexDirection: 'row',
+//     flexWrap: 'wrap',
+//     // We'll center items along the top row
+//     justifyContent: 'flex-start',
+//     alignItems: 'flex-start',
+//     // Negative margin so that each card's horizontal padding forms a "gap"
+//     marginHorizontal: -8,
+//   },
+//   cardContainer: {
+//     // Each card is 100 / columnCount wide, plus we add horizontal padding
+//     paddingHorizontal: 8,
+//     marginBottom: 16,
+//   },
+// });
+
+// //
+// // BASE STYLES
+// //
+// const styles = StyleSheet.create({
+//   safeArea: {
+//     flex: 1,
+//     backgroundColor: '#f5f5f5',
+//     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+//   },
+//   container: {
+//     flex: 1,
+//     padding: 16,
+//   },
+//   header: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     justifyContent: 'space-between',
+//     marginBottom: 16,
+//   },
+//   backButton: {
+//     padding: 8,
+//   },
+//   backButtonText: {
+//     fontSize: 16,
+//     color: '#4CAF50',
+//   },
+//   title: {
+//     flex: 1,
+//     fontSize: 24,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//   },
+//   button: {
+//     backgroundColor: '#4CAF50',
+//     paddingVertical: 8,
+//     paddingHorizontal: 12,
+//     borderRadius: 8,
+//   },
+//   buttonText: {
+//     color: '#fff',
+//     fontWeight: 'bold',
+//   },
+//   scrollArea: {
+//     paddingBottom: 20,
+//   },
+//   loadingContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   noRecipesText: {
+//     textAlign: 'center',
+//     marginTop: 30,
+//     fontSize: 16,
+//     color: '#666',
+//   },
+// });
+// app/RecipePage/RecipeSuggestion.tsx
 import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-  StyleSheet,
-  Platform,
-  StatusBar,
-  Dimensions,
-} from 'react-native';
+import { SafeAreaView, ScrollView, Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Platform, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useUserStore } from '@/stores/useUserStore';
 import { getIngredients } from '@/api/ingredientService';
 import { generateRecipes } from '@/api/recipeService';
 import RecipeCard from '@/components/RecipePage/RecipeCard';
+
+// Import our color theme
+import pageStyles from '@/styles/RecipePageStyle';
+import { COLORS } from '@/styles/RecipePageStyle';
 
 export default function RecipeSuggestions() {
   const router = useRouter();
@@ -24,28 +242,6 @@ export default function RecipeSuggestions() {
 
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Number of columns: 3 (≥1200px), 2 (800–1199px), 1 (<800px)
-  const [columnCount, setColumnCount] = useState(1);
-
-  useEffect(() => {
-    // Decide how many columns to show based on window width
-    const determineColumns = (width: number) => {
-      if (width >= 1200) return 3;
-      if (width >= 800) return 2;
-      return 1;
-    };
-
-    // Initial calculation
-    const { width } = Dimensions.get('window');
-    setColumnCount(determineColumns(width));
-
-    // Listen for window size changes
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setColumnCount(determineColumns(window.width));
-    });
-    return () => subscription?.remove();
-  }, []);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -67,7 +263,8 @@ export default function RecipeSuggestions() {
           return;
         }
 
-        const recipesResponse = await generateRecipes(ingredientsData);
+        const ingredients = ingredientsData;
+        const recipesResponse = await generateRecipes(ingredients);
 
         console.log('✅ recipesResponse =>', recipesResponse);
 
@@ -77,6 +274,7 @@ export default function RecipeSuggestions() {
         } else {
           console.warn('⚠️ No recipes returned.');
         }
+
       } catch (error) {
         console.error('❌ Error fetching recipes:', error);
       } finally {
@@ -91,8 +289,8 @@ export default function RecipeSuggestions() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#4CAF50" />
-          <Text>Loading recipes...</Text>
+          <ActivityIndicator size="large" color={COLORS.accent} />
+          <Text style={styles.loadingText}>Looking for recipe ideas...</Text>
         </View>
       </SafeAreaView>
     );
@@ -109,11 +307,11 @@ export default function RecipeSuggestions() {
           >
             <Text style={styles.backButtonText}>Back</Text>
           </TouchableOpacity>
-
-          <Text style={styles.title}>Recipes Found</Text>
-
+          
+          <Text style={styles.title}>Recipe Ideas</Text>
+          
           <TouchableOpacity
-            style={styles.button}
+            style={styles.scanButton}
             onPress={() => router.push('/(MainPage)/Scanner')}
           >
             <Text style={styles.buttonText}>Scan Again</Text>
@@ -122,23 +320,26 @@ export default function RecipeSuggestions() {
 
         <ScrollView contentContainerStyle={styles.scrollArea}>
           {recipes.length === 0 ? (
-            <Text style={styles.noRecipesText}>
-              No recipes found with your ingredients.
-            </Text>
-          ) : (
-            <View style={layoutStyles.grid}>
-              {recipes.map((recipe, index) => (
-                <View
-                  key={index}
-                  style={[
-                    layoutStyles.cardContainer,
-                    { width: `${100 / columnCount}%` },
-                  ]}
-                >
-                  <RecipeCard recipe={recipe} />
-                </View>
-              ))}
+            <View style={styles.emptyContainer}>
+              <Text style={styles.noRecipesText}>
+                No recipes found with your ingredients.
+              </Text>
+              <TouchableOpacity
+                style={styles.scanButton}
+                onPress={() => router.push('/(MainPage)/Scanner')}
+              >
+                <Text style={styles.buttonText}>Scan Different Items</Text>
+              </TouchableOpacity>
             </View>
+          ) : (
+            <>
+              <Text style={styles.subheading}>
+                We found {recipes.length} recipe{recipes.length !== 1 ? 's' : ''} with your ingredients
+              </Text>
+              {recipes.map((recipe, index) => (
+                <RecipeCard key={index} recipe={recipe} />
+              ))}
+            </>
           )}
         </ScrollView>
       </View>
@@ -146,33 +347,10 @@ export default function RecipeSuggestions() {
   );
 }
 
-//
-// LAYOUT STYLES
-//
-const layoutStyles = StyleSheet.create({
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    // We'll center items along the top row
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    // Negative margin so that each card's horizontal padding forms a "gap"
-    marginHorizontal: -8,
-  },
-  cardContainer: {
-    // Each card is 100 / columnCount wide, plus we add horizontal padding
-    paddingHorizontal: 8,
-    marginBottom: 16,
-  },
-});
-
-//
-// BASE STYLES
-//
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: COLORS.background,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   container: {
@@ -184,28 +362,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 16,
+    paddingVertical: 12,
+    backgroundColor: COLORS.primary,
+    borderRadius: 8,
+    paddingHorizontal: 16,
   },
   backButton: {
     padding: 8,
   },
   backButtonText: {
     fontSize: 16,
-    color: '#4CAF50',
+    color: COLORS.text,
+    fontWeight: '600',
   },
   title: {
     flex: 1,
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: COLORS.text,
   },
-  button: {
-    backgroundColor: '#4CAF50',
+  subheading: {
+    fontSize: 16,
+    color: COLORS.text,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  scanButton: {
+    backgroundColor: COLORS.accent,
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
   },
   buttonText: {
-    color: '#fff',
+    color: COLORS.textLight,
     fontWeight: 'bold',
   },
   scrollArea: {
@@ -216,10 +406,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  loadingText: {
+    marginTop: 12,
+    color: COLORS.text,
+    fontSize: 16,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 60,
+  },
   noRecipesText: {
     textAlign: 'center',
-    marginTop: 30,
+    marginBottom: 20,
     fontSize: 16,
-    color: '#666',
+    color: COLORS.text,
   },
 });
