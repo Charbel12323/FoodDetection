@@ -39,7 +39,7 @@ export default function SideBar() {
   ];
 
   const footerItems = [
-    { id: 'Settings', icon: Settings, label: 'Settings' },
+
     { id: 'Logout', icon: LogOut, label: 'Logout' },
   ];
 
