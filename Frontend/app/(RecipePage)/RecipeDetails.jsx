@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useUserStore } from '@/stores/useUserStore';
+import { addRecipe } from '@/api/recipeService';
+
 
 export default function RecipeDetails() {
   const router = useRouter();
@@ -11,6 +14,8 @@ export default function RecipeDetails() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('ingredients');
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isCooking, setIsCooking] = useState(false);
+  const userId = useUserStore((state) => state.user?.user_id);
   
   const handleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -46,6 +51,37 @@ export default function RecipeDetails() {
       </View>
     );
   }
+
+  const handleCook = async () => {
+    if (!userId) {
+      Alert.alert("Error", "User not logged in.");
+      return;
+    }
+  
+    try {
+      setIsCooking(true);
+      setIsFavorite(true);
+  
+      // Calls addRecipe to save the recipe in the database
+      await addRecipe({
+        user_id: userId,
+        name: recipe.name,
+        cookingTime: recipe.cookingTime || '30 minutes',
+        difficulty: recipe.difficulty || 'Easy',
+        servings: recipe.servings || 1,
+        nutrition: recipe.nutrition || {},
+        instructions: recipe.instructions,
+        ingredients: recipe.ingredients || [],
+      });
+  
+      Alert.alert("Success", "Recipe added successfully!");
+  
+    } catch (error) {
+      Alert.alert("Error", "Failed to add recipe.");
+    } finally {
+      setIsCooking(false);
+    }
+  };
   
   return (
     <SafeAreaView style={styles.container}>
@@ -68,7 +104,7 @@ export default function RecipeDetails() {
             styles.favoriteButton, 
             isFavorite && styles.favoriteButtonActive
           ]} 
-          onPress={handleFavorite}
+          onPress={handleCook}
         >
           <Text style={[
             styles.heartIcon,
