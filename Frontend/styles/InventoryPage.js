@@ -44,6 +44,7 @@ const InventoryStyles = StyleSheet.create({
   ingredientsList: {
     padding: 16,
     paddingBottom: 80,
+    flexGrow: 1, // Allow content to grow and enable scrolling
   },
   ingredientCard: {
     flexDirection: "row",

@@ -1,13 +1,13 @@
-// styles/HeaderStyles.js
 import { StyleSheet, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 48) / 3;
+// Adjust cardSize to take around 40% of screen width
+const cardSize = width * 0.4;
 
 export default StyleSheet.create({
+  // Removed overflow: 'hidden' to allow scrolling
   container: {
-    flex:1,
-    overflow: 'hidden',
+    flex: 1,
   },
   headerGradient: {
     paddingTop: 50,
@@ -63,24 +63,29 @@ export default StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
     marginBottom: 10,
   },
+  // Updated cards container styling for responsiveness
   cardsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
     paddingHorizontal: 16,
     marginTop: 25,
   },
+  // Updated card styling for a responsive square card
   card: {
-    width: cardWidth,
-    height: cardWidth,
+    width: cardSize,
+    height: cardSize,
     borderRadius: 16,
     padding: 15,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#1E1E1E', // Update to your preferred background color
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.2,
     shadowRadius: 12,
     elevation: 8,
+    marginBottom: 20, // Space for wrapping on smaller screens
   },
   cardIconContainer: {
     width: 45,
