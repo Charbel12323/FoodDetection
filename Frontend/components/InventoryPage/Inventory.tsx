@@ -8,7 +8,6 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
-  Dimensions,
   StatusBar,
   Animated,
 } from "react-native"
@@ -19,8 +18,6 @@ import useIngredients from "@/hooks/useIngredients" // Adjust path as needed
 import { deleteIngredient } from "@/api/ingredientService" // New delete API function
 import { useUserStore } from "@/stores/useUserStore"
 import InventoryStyles from "@/styles/InventoryPage" // Fixed import
-
-const { width } = Dimensions.get("window")
 
 const InventoryPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("")
@@ -59,7 +56,7 @@ const InventoryPage: React.FC = () => {
   )
 
   return (
-    <SafeAreaView style={InventoryStyles.container} pointerEvents="auto">
+    <SafeAreaView style={InventoryStyles.container}>
       <StatusBar barStyle="light-content" />
 
       {/* Header Section */}
@@ -68,8 +65,8 @@ const InventoryPage: React.FC = () => {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={headerStyles.headerGradient}
-        pointerEvents="none"
       >
+        {/* Decorative elements */}
         <View style={headerStyles.decorativeCircle} />
         <View style={headerStyles.decorativeCircleSmall} />
 
@@ -128,8 +125,7 @@ const InventoryPage: React.FC = () => {
         </View>
       ) : (
         <Animated.View
-          style={{ opacity: fadeAnim, transform: [{ translateY }] }}
-          pointerEvents="auto"
+          style={{ opacity: fadeAnim, transform: [{ translateY }], flex: 1 }}
         >
           <FlatList
             data={filteredIngredients}
