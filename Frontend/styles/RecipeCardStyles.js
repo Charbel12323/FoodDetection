@@ -12,21 +12,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginBottom: 12,
   },
-  imageContainer: {
-    position: 'relative',
-    width: '100%',
-    paddingBottom: '56.25%', // 16:9 aspect ratio
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    overflow: 'hidden',
-  },
-  image: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-  },
+  // ✅ FAVORITE BUTTON STAYS
   favoriteButton: {
     position: 'absolute',
     top: 10,
@@ -49,6 +35,9 @@ const styles = StyleSheet.create({
   heartIconActive: {
     color: '#fff',
   },
+
+  // ✅ IMAGE IS REMOVED (NO imageContainer, NO image)
+
   content: {
     padding: 16,
   },

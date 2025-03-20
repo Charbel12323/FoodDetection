@@ -24,6 +24,7 @@ export const baseStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#ffffff',
   },
   header: {
     flexDirection: 'row',
@@ -32,7 +33,8 @@ export const baseStyles = StyleSheet.create({
     marginBottom: 16,
   },
   backButton: {
-    padding: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
   backButtonText: {
     fontSize: 16,
@@ -43,6 +45,7 @@ export const baseStyles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: '#333333',
   },
   button: {
     backgroundColor: '#4CAF50',
@@ -51,21 +54,23 @@ export const baseStyles = StyleSheet.create({
     borderRadius: 8,
   },
   buttonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontWeight: 'bold',
+    fontSize: 14,
   },
   scrollArea: {
-    paddingBottom: 20,
+    paddingBottom: 16,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ffffff',
   },
   noRecipesText: {
     textAlign: 'center',
-    marginTop: 30,
+    marginTop: 40,
     fontSize: 16,
-    color: '#666',
+    color: '#888888',
   },
 });
