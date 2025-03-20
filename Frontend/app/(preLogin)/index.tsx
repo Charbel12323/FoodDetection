@@ -5,40 +5,35 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
-import Header from "@/components/LandingPage/Header";
-import HeroSection from "@/components/LandingPage/HeroSection";
-import FeaturesSection from "@/components/LandingPage/FeatureSection";
-import HowItWorksSection from "@/components/LandingPage/HowItWorksSection";
-import Footer from "@/components/LandingPage/Footer";
-import styles from "@/styles/LandingPageStyle";
+import {View, Text } from "react-native";
+import { useRouter } from "expo-router";
+import styles from "@/styles/WelcomePageStyle";
+import AuthButtons from "@/components/WelcomePage/AuthButtons";
+import BackgroundPattern from "@/components/WelcomePage/BackgroundPattern";
+
 
 export default function App() {
-  const [darkMode, setDarkMode] = useState(true);
-  const toggleDarkMode = () => setDarkMode((prev) => !prev);
-
-  // Global background style
-  const backgroundStyle = {
-    backgroundColor: darkMode ? "#121212" : "#F9FAFB",
-    flex: 1,
-  };
+  const router = useRouter(); // Use expo-router's navigation system
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={darkMode ? "light-content" : "dark-content"}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        <HeroSection darkMode={darkMode} />
-        <FeaturesSection darkMode={darkMode} />
-        <HowItWorksSection darkMode={darkMode} />
-        <Footer darkMode={darkMode} />
-      </ScrollView>
-    </SafeAreaView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFBE5" }}>
+    <StatusBar barStyle="dark-content" />
+    <View style={styles.container}>
+      <BackgroundPattern />
+
+      <View style={styles.content}>
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>FridgeBud</Text>
+          <Text style={styles.subtitle}>the best bud</Text>
+        </View>
+
+        {/* Authentication Buttons */}
+        <AuthButtons 
+          onSignIn={() => router.push("/login")} 
+          onLearnMore={() => router.push("/landing")} 
+        />
+      </View>
+    </View>
+  </SafeAreaView>
   );
 }

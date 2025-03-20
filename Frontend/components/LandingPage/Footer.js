@@ -1,7 +1,5 @@
-// src/components/LandingPage/Footer.js
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { ScanLine } from 'lucide-react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native'; // Import Image
 import styles from '@/styles/LandingPageStyle';
 
 export default function Footer({ darkMode }) {
@@ -9,12 +7,16 @@ export default function Footer({ darkMode }) {
     <View style={styles.footer}>
       <View style={styles.footerTop}>
         <View style={styles.footerLogoContainer}>
-          <ScanLine size={20} color={darkMode ? "#60A5FA" : "#2563EB"} />
-          <Text style={[styles.footerLogoText, { color: darkMode ? "#FFFFFF" : "#111827" }]}>
+          {/* Replace ScanLine with the fridge image */}
+          <Image
+            source={require('@/assets/images/fridge.png')} // Ensure this path is correct
+            style={[styles.logoImage, { tintColor: darkMode ? 'rgb(74, 173, 203)' : '#111827' }]}
+          />
+          <Text style={[styles.footerLogoText, { color: darkMode ? "rgb(74, 173, 203)" : "#111827" }]}>
             FridgeBud
           </Text>
         </View>
-        <Text style={[styles.footerTagline, { color: darkMode ? "#D1D5DB" : "#6B7280" }]}>
+        <Text style={[styles.footerTagline, { color: darkMode ? "#373737" : "#6B7280" }]}>
           Smart kitchen management at your fingertips
         </Text>
       </View>
