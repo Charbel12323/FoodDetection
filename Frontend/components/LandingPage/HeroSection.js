@@ -2,8 +2,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import styles from '@/styles/LandingPageStyle';
-
+import { useRouter } from 'expo-router';
 export default function HeroSection({ darkMode }) {
+  const router = useRouter();
   return (
     <View style={[styles.heroSection, { backgroundColor: darkMode ? "#1F2937" : "#F0F9FF" }]}>
       <View style={styles.heroContent}>
@@ -14,13 +15,11 @@ export default function HeroSection({ darkMode }) {
           Scan, track, and manage your food inventory with ease. Reduce waste and save money with smart expiration alerts.
         </Text>
         <View style={styles.heroCta}>
-          <TouchableOpacity style={styles.primaryButton}>
+        <TouchableOpacity 
+            style={styles.primaryButton}
+            onPress={() => router.push('/(preLogin)/login')}
+          >
             <Text style={styles.primaryButtonText}>Get Started</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.secondaryButton, { borderColor: darkMode ? "#374151" : "#E5E7EB" }]}>
-            <Text style={[styles.secondaryButtonText, { color: darkMode ? "#FFFFFF" : "#111827" }]}>
-              Learn More
-            </Text>
           </TouchableOpacity>
         </View>
       </View>

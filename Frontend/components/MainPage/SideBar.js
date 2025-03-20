@@ -8,28 +8,32 @@ import {
   Dimensions, 
   Platform 
 } from 'react-native';
+import { useUserStore } from '@/stores/useUserStore';
 import { 
   Home, 
   ShoppingCart, 
   Heart, 
-  Settings, 
   LogOut, 
   Menu, 
   X 
 } from 'react-native-feather';
-import styles from '@/styles/SideBarStyle'; // Adjust the path as needed
+import styles from '@/styles/SideBarStyle';
 import { useRouter } from 'expo-router';
 
 const SIDEBAR_WIDTH = 280;
 
 export default function SideBar() {
   const router = useRouter();
+  const user = useUserStore((state) => state.user);
+  const clearUser = useUserStore((state) => state.clearUser);
+
   const [isVisible, setIsVisible] = useState(false);
   const [activeItem, setActiveItem] = useState('Home');
 
   // Animations
   const slideAnim = useRef(new Animated.Value(SIDEBAR_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  // Even though there are 4 visible items (3 menu + 1 footer), we allocate 6 animation values as in your examples.
   const itemsAnim = useRef([...Array(6)].map(() => new Animated.Value(50))).current;
 
   const menuItems = [
@@ -39,11 +43,10 @@ export default function SideBar() {
   ];
 
   const footerItems = [
-    { id: 'Settings', icon: Settings, label: 'Settings' },
     { id: 'Logout', icon: LogOut, label: 'Logout' },
   ];
 
-  // Toggle sidebar
+  // Toggle sidebar open/close
   const toggleSidebar = () => {
     Animated.timing(fadeAnim, {
       toValue: isVisible ? 0 : 0.5,
@@ -71,9 +74,7 @@ export default function SideBar() {
       });
     } else {
       // Reset animations when closing
-      itemsAnim.forEach(anim => {
-        anim.setValue(50);
-      });
+      itemsAnim.forEach(anim => anim.setValue(50));
     }
   };
 
@@ -92,36 +93,38 @@ export default function SideBar() {
     }).start(() => {
       setIsVisible(false);
       // Reset animations
-      itemsAnim.forEach(anim => {
-        anim.setValue(50);
-      });
+      itemsAnim.forEach(anim => anim.setValue(50));
     });
   };
 
-  // Handle item press and navigate if Inventory is selected
+  // Handle item press: navigate based on selection or logout if selected.
   const handleItemPress = (id) => {
     setActiveItem(id);
+
     if (id === 'Inventory') {
       router.push('/(Inventory)/Inventory');
-    }
-
-    else if (id === 'Home') {
+    } else if (id === 'Home') {
       router.push('/(MainPage)/MainPage');
     } else if (id === 'Recipes') {
-      router.push('/(Recipes)/Recipes'); // New route for recipes page
+      router.push('/(Recipes)/Recipes');
+    } else if (id === 'Logout') {
+      // Logout: clear user and navigate to login
+      clearUser();
+      router.push('/(preLogin)/login');
+      return;
     }
-    // Auto-close on mobile
+
+    // Auto-close on mobile platforms
     if (Platform.OS !== 'web') {
       setTimeout(closeSidebar, 300);
     }
   };
 
   return (
-    // The pointerEvents="box-none" here ensures the container itself doesn’t block touches.
     <View style={styles.container} pointerEvents="box-none">
       {/* Menu Button */}
-      <TouchableOpacity 
-        onPress={toggleSidebar} 
+      <TouchableOpacity
+        onPress={toggleSidebar}
         style={[styles.menuButton, isVisible && styles.menuButtonActive]}
         activeOpacity={0.8}
       >
@@ -136,10 +139,7 @@ export default function SideBar() {
       <Animated.View 
         style={[
           styles.overlay, 
-          { 
-            opacity: fadeAnim,
-            display: isVisible ? 'flex' : 'none' 
-          }
+          { opacity: fadeAnim, display: isVisible ? 'flex' : 'none' }
         ]}
       >
         <TouchableWithoutFeedback onPress={closeSidebar}>
@@ -147,20 +147,24 @@ export default function SideBar() {
         </TouchableWithoutFeedback>
       </Animated.View>
 
-      {/* Sidebar */}
+      {/* Sidebar Panel */}
       <Animated.View 
         style={[styles.sidebar, { transform: [{ translateX: slideAnim }] }]}
       >
         {/* Profile Section */}
         <View style={styles.profileSection}>
-          <Text style={styles.profileName}>Emma Johnson</Text>
-          <Text style={styles.profileEmail}>emma@example.com</Text>
+          <Text style={styles.profileName}>
+            {user?.username || 'Emma Johnson'}
+          </Text>
+          <Text style={styles.profileEmail}>
+            {user?.email || 'emma@example.com'}
+          </Text>
         </View>
 
         {/* Menu Items */}
         <View style={styles.menuItems}>
           {menuItems.map((item, index) => (
-            <Animated.View 
+            <Animated.View
               key={item.id}
               style={{ 
                 transform: [{ translateX: itemsAnim[index] }],
@@ -171,32 +175,21 @@ export default function SideBar() {
               }}
             >
               <TouchableOpacity 
-                style={[
-                  styles.menuItem, 
-                  activeItem === item.id && styles.activeMenuItem
-                ]}
+                style={[styles.menuItem, activeItem === item.id && styles.activeMenuItem]}
                 onPress={() => handleItemPress(item.id)}
                 activeOpacity={0.7}
               >
-                <View style={[
-                  styles.menuIconContainer,
-                  activeItem === item.id && styles.activeMenuIconContainer
-                ]}>
+                <View style={[styles.menuIconContainer, activeItem === item.id && styles.activeMenuIconContainer]}>
                   <item.icon 
                     width={20} 
                     height={20} 
                     color={activeItem === item.id ? '#0BAB64' : '#fff'} 
                   />
                 </View>
-                <Text style={[
-                  styles.menuItemText,
-                  activeItem === item.id && styles.activeMenuItemText
-                ]}>
+                <Text style={[styles.menuItemText, activeItem === item.id && styles.activeMenuItemText]}>
                   {item.label}
                 </Text>
-                {activeItem === item.id && (
-                  <View style={styles.activeIndicator} />
-                )}
+                {activeItem === item.id && <View style={styles.activeIndicator} />}
               </TouchableOpacity>
             </Animated.View>
           ))}
@@ -208,7 +201,7 @@ export default function SideBar() {
         {/* Footer Items */}
         <View style={styles.footerItems}>
           {footerItems.map((item, index) => (
-            <Animated.View 
+            <Animated.View
               key={item.id}
               style={{ 
                 transform: [{ translateX: itemsAnim[index + menuItems.length] }],
@@ -219,27 +212,18 @@ export default function SideBar() {
               }}
             >
               <TouchableOpacity 
-                style={[
-                  styles.menuItem, 
-                  activeItem === item.id && styles.activeMenuItem
-                ]}
+                style={[styles.menuItem, activeItem === item.id && styles.activeMenuItem]}
                 onPress={() => handleItemPress(item.id)}
                 activeOpacity={0.7}
               >
-                <View style={[
-                  styles.menuIconContainer,
-                  activeItem === item.id && styles.activeMenuIconContainer
-                ]}>
+                <View style={[styles.menuIconContainer, activeItem === item.id && styles.activeMenuIconContainer]}>
                   <item.icon 
                     width={20} 
                     height={20} 
                     color={activeItem === item.id ? '#0BAB64' : '#fff'} 
                   />
                 </View>
-                <Text style={[
-                  styles.menuItemText,
-                  activeItem === item.id && styles.activeMenuItemText
-                ]}>
+                <Text style={[styles.menuItemText, activeItem === item.id && styles.activeMenuItemText]}>
                   {item.label}
                 </Text>
               </TouchableOpacity>

@@ -1,3 +1,5 @@
+import React from 'react';
+import { TouchableOpacity, Text, View, Image } from 'react-native';
 import React, { useState } from 'react';
 import {
   TouchableOpacity,
@@ -7,14 +9,28 @@ import {
   Alert
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { addRecipe } from '@/api/recipeService';
-import { useUserStore } from '@/stores/useUserStore';
+import { useRecipeCard } from '@/hooks/useRecipeCard';
+import styles from '@/styles/RecipeCardStyles';
 
 interface RecipeCardProps {
   recipe: any;
   showCookButton?: boolean;
 }
 
+export default function RecipeCard({
+  recipe,
+  showCookButton = true
+}: RecipeCardProps) {
+  const { 
+    isCooking, 
+    isCooked, 
+    isFavorite, 
+    handlePress, 
+    handleCook, 
+    handleFavorite 
+  } = useRecipeCard(recipe);
+
+  const imageUri = recipe.image || 'https://via.placeholder.com/300';
 export default function RecipeCard({ recipe, showCookButton = true }: RecipeCardProps) {
   const router = useRouter();
   const [isCooking, setIsCooking] = useState(false);
@@ -54,21 +70,53 @@ export default function RecipeCard({ recipe, showCookButton = true }: RecipeCard
 
   return (
     <TouchableOpacity style={styles.card} onPress={handlePress}>
+      {/* Image Section */}
+      <View style={styles.imageContainer}>
+        <Image
+          source={{ uri: imageUri }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+
+        {/* Favorite Button */}
+        <TouchableOpacity
+          style={[
+            styles.favoriteButton,
+            isFavorite && styles.favoriteButtonActive
+          ]}
+          onPress={handleFavorite}
+        >
+          <Text
+            style={[
+              styles.heartIcon,
+              isFavorite && styles.heartIconActive
+            ]}
+          >
+            ♡
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Content */}
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title}>{recipe.name}</Text>
         </View>
-
         <View style={styles.badgeContainer}>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{recipe.cookingTime || "30 min"}</Text>
+            <Text style={styles.badgeText}>
+              {recipe.cookingTime || "30 min"}
+            </Text>
           </View>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{recipe.difficulty || "Easy"}</Text>
+            <Text style={styles.badgeText}>
+              {recipe.difficulty || "Easy"}
+            </Text>
           </View>
         </View>
       </View>
 
+      {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>
           {recipe.ingredients?.length || 0} ingredients
@@ -77,10 +125,10 @@ export default function RecipeCard({ recipe, showCookButton = true }: RecipeCard
           <TouchableOpacity
             style={styles.cookButton}
             onPress={handleCook}
-            disabled={isCooking}
+            disabled={isCooking || isCooked}
           >
             <Text style={styles.cookButtonText}>
-              {isCooking ? "Cooking..." : "Cook"}
+              {isCooking ? "Cooking..." : isCooked ? "Cooked" : "Cook"}
             </Text>
           </TouchableOpacity>
         )}

@@ -1,8 +1,9 @@
-import { baseURL } from "@/utilities/constants";
 
 
 // services/authService.js
+
 const BASE_URL = "https://fooddetection-production.up.railway.app";
+
 // or wherever your Express server runs
 
 export async function login(email, password) {

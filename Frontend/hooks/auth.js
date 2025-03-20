@@ -3,9 +3,9 @@ import { login, signup } from "@/api/authService";
 import { useUserStore } from '@/stores/useUserStore'; 
 
 export default function useAuth(router) {
-  // Zustand action to set the userId globally
+  // Zustand action to set the user globally
   const setUser = useUserStore(state => state.setUser);
-  console.log(setUser)
+  console.log(setUser);
 
   // Local state management for the auth form
   const [isLogin, setIsLogin] = useState(true);
@@ -22,25 +22,51 @@ export default function useAuth(router) {
     setMessage("");
     setLoading(true);
 
-    // Basic validation for signup (confirm password)
-    if (!isLogin && password !== confirmPassword) {
-      setMessage("Passwords do not match");
+    // Validate email: must include '@'
+    if (!email.includes("@")) {
+      setMessage("Email must include an '@' sign.");
       setLoading(false);
       return;
     }
 
+    // Validate password: must be at least 6 characters for both login and signup
+    if (password.length < 6) {
+      setMessage("Password must be at least 6 characters.");
+      setLoading(false);
+      return;
+    }
+
+    // For sign-up, perform additional validations:
+    if (!isLogin) {
+      // Username cannot contain numbers
+      if (/\d/.test(username)) {
+        setMessage("Username cannot contain numbers.");
+        setLoading(false);
+        return;
+      }
+      // Username must be at least 6 characters long
+      if (username.length < 6) {
+        setMessage("Username must be at least 6 characters long.");
+        setLoading(false);
+        return;
+      }
+      // Confirm password validation for sign-up
+      if (password !== confirmPassword) {
+        setMessage("Passwords do not match");
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       let data;
-
       if (isLogin) {
         // Call login API
         data = await login(email, password);
         setMessage("Login successful!");
 
-        // Set the userId globally in Zustand
         // Set the entire user object globally in Zustand
         setUser(data.user);
-
 
         // Navigate to the Main Page after login
         router.push("/(MainPage)/MainPage");

@@ -1,4 +1,6 @@
+
 const BASE_URL = "https://fooddetection-production.up.railway.app";
+
 
 export const generateRecipes = async (ingredients) => {
   try {
