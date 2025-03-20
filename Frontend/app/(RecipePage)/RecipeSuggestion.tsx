@@ -1,4 +1,3 @@
-// src/pages/(MainPage)/RecipeSuggestions.tsx
 import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
@@ -9,8 +8,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Platform,
-  StatusBar,
-  Dimensions,
+  StatusBar
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useUserStore } from '@/stores/useUserStore';
@@ -24,28 +22,6 @@ export default function RecipeSuggestions() {
 
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Number of columns: 3 (≥1200px), 2 (800–1199px), 1 (<800px)
-  const [columnCount, setColumnCount] = useState(1);
-
-  useEffect(() => {
-    // Decide how many columns to show based on window width
-    const determineColumns = (width: number) => {
-      if (width >= 1200) return 3;
-      if (width >= 800) return 2;
-      return 1;
-    };
-
-    // Initial calculation
-    const { width } = Dimensions.get('window');
-    setColumnCount(determineColumns(width));
-
-    // Listen for window size changes
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setColumnCount(determineColumns(window.width));
-    });
-    return () => subscription?.remove();
-  }, []);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -67,7 +43,8 @@ export default function RecipeSuggestions() {
           return;
         }
 
-        const recipesResponse = await generateRecipes(ingredientsData);
+        const ingredients = ingredientsData;
+        const recipesResponse = await generateRecipes(ingredients);
 
         console.log('✅ recipesResponse =>', recipesResponse);
 
@@ -77,6 +54,7 @@ export default function RecipeSuggestions() {
         } else {
           console.warn('⚠️ No recipes returned.');
         }
+
       } catch (error) {
         console.error('❌ Error fetching recipes:', error);
       } finally {
@@ -126,19 +104,9 @@ export default function RecipeSuggestions() {
               No recipes found with your ingredients.
             </Text>
           ) : (
-            <View style={layoutStyles.grid}>
-              {recipes.map((recipe, index) => (
-                <View
-                  key={index}
-                  style={[
-                    layoutStyles.cardContainer,
-                    { width: `${100 / columnCount}%` },
-                  ]}
-                >
-                  <RecipeCard recipe={recipe} />
-                </View>
-              ))}
-            </View>
+            recipes.map((recipe, index) => (
+              <RecipeCard key={index} recipe={recipe} />
+            ))
           )}
         </ScrollView>
       </View>
@@ -146,29 +114,6 @@ export default function RecipeSuggestions() {
   );
 }
 
-//
-// LAYOUT STYLES
-//
-const layoutStyles = StyleSheet.create({
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    // We'll center items along the top row
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    // Negative margin so that each card's horizontal padding forms a "gap"
-    marginHorizontal: -8,
-  },
-  cardContainer: {
-    // Each card is 100 / columnCount wide, plus we add horizontal padding
-    paddingHorizontal: 8,
-    marginBottom: 16,
-  },
-});
-
-//
-// BASE STYLES
-//
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,

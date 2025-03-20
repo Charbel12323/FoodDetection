@@ -4,8 +4,7 @@ import {
   Text,
   View,
   StyleSheet,
-  Alert,
-  Image
+  Alert
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { addRecipe } from '@/api/recipeService';
@@ -16,13 +15,9 @@ interface RecipeCardProps {
   showCookButton?: boolean;
 }
 
-export default function RecipeCard({
-  recipe,
-  showCookButton = true
-}: RecipeCardProps) {
+export default function RecipeCard({ recipe, showCookButton = true }: RecipeCardProps) {
   const router = useRouter();
   const [isCooking, setIsCooking] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false); // Favorite state
   const userId = useUserStore((state) => state.user?.user_id);
 
   const handlePress = () => {
@@ -32,13 +27,11 @@ export default function RecipeCard({
     });
   };
 
-  // ✅ This function adds the recipe to the database
   const handleCook = async () => {
     if (!userId) {
       Alert.alert("Error", "User not logged in.");
       return;
     }
-
     try {
       setIsCooking(true);
       await addRecipe({
@@ -59,52 +52,8 @@ export default function RecipeCard({
     }
   };
 
-  // ✅ Favorite button triggers the same function as cook
-  const handleFavorite = async () => {
-    if (isFavorite) {
-      Alert.alert("Info", "This recipe is already favorited!");
-      return;
-    }
-
-    try {
-      setIsFavorite(true); // Mark as favorite in the UI
-      await handleCook(); // Call the same logic as "Cook"
-    } catch (error) {
-      setIsFavorite(false);
-    }
-  };
-
-  const imageUri = recipe.image || 'https://via.placeholder.com/300';
-
   return (
     <TouchableOpacity style={styles.card} onPress={handlePress}>
-      {/* Image Section */}
-      <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-
-        {/* ✅ Favorite Button Positioned Over Image */}
-        <TouchableOpacity
-          style={[
-            styles.favoriteButton,
-            isFavorite && styles.favoriteButtonActive
-          ]}
-          onPress={handleFavorite}
-        >
-          <Text
-            style={[
-              styles.heartIcon,
-              isFavorite && styles.heartIconActive
-            ]}
-          >
-            ♡
-          </Text>
-        </TouchableOpacity>
-      </View>
-
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title}>{recipe.name}</Text>
@@ -124,7 +73,6 @@ export default function RecipeCard({
         <Text style={styles.footerText}>
           {recipe.ingredients?.length || 0} ingredients
         </Text>
-
         {showCookButton && (
           <TouchableOpacity
             style={styles.cookButton}
@@ -152,43 +100,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginBottom: 12,
-  },
-  imageContainer: {
-    position: 'relative',
-    width: '100%',
-    paddingBottom: '56.25%', // 16:9 aspect ratio
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    overflow: 'hidden',
-  },
-  image: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-  },
-  favoriteButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    borderRadius: 16,
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
-  },
-  favoriteButtonActive: {
-    backgroundColor: '#4CAF50',
-  },
-  heartIcon: {
-    fontSize: 18,
-    color: '#999',
-  },
-  heartIconActive: {
-    color: '#fff',
   },
   content: {
     padding: 16,

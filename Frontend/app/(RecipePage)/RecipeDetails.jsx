@@ -52,7 +52,7 @@ export default function RecipeDetails() {
       {/* Header Image */}
       <View style={styles.headerImageContainer}>
         <Image
-          source={{ uri: recipe.image }}
+          source={{ uri: 'https://via.placeholder.com/300'}} //recipe.image }}
           style={styles.headerImage}
         />
         {/* Back Button */}
