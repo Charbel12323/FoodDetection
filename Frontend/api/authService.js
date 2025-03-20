@@ -1,7 +1,9 @@
 
 
 // services/authService.js
-const BASE_URL = "http://10.13.151.142:3000"; 
+
+const BASE_URL = "https://fooddetection-production.up.railway.app";
+
 // or wherever your Express server runs
 
 export async function login(email, password) {

@@ -1,4 +1,6 @@
-const BASE_URL = "http://10.13.151.142:3000"; 
+
+const BASE_URL = "https://fooddetection-production.up.railway.app";
+
 
 export const generateRecipes = async (ingredients) => {
   try {
