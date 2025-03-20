@@ -27,12 +27,12 @@ export default function RecipeCard({
   return (
     <TouchableOpacity style={styles.card} onPress={handlePress}>
       {/* Image Section */}
-      <View style={styles.imageContainer}>
-        <Image
+      <View >
+        {/* <Image
           source={{ uri: imageUri }}
           style={styles.image}
           resizeMode="cover"
-        />
+        /> */}
 
         {/* Favorite Button */}
         <TouchableOpacity

@@ -7,7 +7,8 @@ import { styles } from '@/styles/RecipeDetails';
 
 export default function RecipeDetails() {
   const router = useRouter();
-  const { recipe, loading, activeTab, setActiveTab, isFavorite, handleFavorite } = useRecipeDetails();
+  const { recipe, loading, activeTab, setActiveTab, isFavorite, handleCook } = useRecipeDetails();
+
 
   if (loading || !recipe) {
     return (
@@ -22,17 +23,22 @@ export default function RecipeDetails() {
     <SafeAreaView style={styles.container}>
       {/* Header Image */}
       <View style={styles.headerImageContainer}>
-        <Image source={{ uri: recipe.image }} style={styles.headerImage} />
+        <Image source={{ uri: 'https://via.placeholder.com/300' }} style={styles.headerImage} />
         {/* Back Button */}
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         {/* Favorite Button */}
         <TouchableOpacity
-          style={[styles.favoriteButton, isFavorite && styles.favoriteButtonActive]}
-          onPress={handleFavorite}
+          style={[
+            styles.favoriteButton,
+            isFavorite && styles.favoriteButtonActive // ✅ change background color
+          ]}
+          onPress={handleCook}
         >
-          <Text style={[styles.heartIcon, isFavorite && styles.heartIconActive]}>♡</Text>
+          <Text style={[ styles.heartIcon, isFavorite && styles.heartIconActive]}>
+            ♡
+          </Text>
         </TouchableOpacity>
       </View>
 
