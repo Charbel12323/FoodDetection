@@ -65,13 +65,13 @@ export default StyleSheet.create({
   },
   cardsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     paddingHorizontal: 16,
     marginTop: 25,
   },
   card: {
     width: cardWidth,
-    height: 120,
+    height: cardWidth,
     borderRadius: 16,
     padding: 15,
     alignItems: 'center',
