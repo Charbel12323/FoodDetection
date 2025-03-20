@@ -7,7 +7,7 @@ import styles from '@/styles/LandingPageStyle';
 export default function HowItWorksSection({ darkMode }) {
   return (
     <View style={styles.howItWorksSection}>
-      <Text style={[styles.sectionTitle, { color: darkMode ? "#FFFFFF" : "#111827" }]}>
+      <Text style={[styles.sectionTitle, { color: darkMode ? "#373737" : "#111827" }]}>
         How It Works
       </Text>
       <View style={styles.stepsContainer}>
