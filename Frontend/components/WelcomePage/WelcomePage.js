@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, SafeAreaView, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Logo from './Logo';
+import Logo from './Logo';  // Import Logo component
 import AuthButtons from './AuthButtons';
-import BackgroundPattern from './BackgroundPattern';
 import styles from '@/styles/WelcomePageStyle';
 
 export default function WelcomePage() {
@@ -20,13 +19,14 @@ export default function WelcomePage() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <BackgroundPattern />
       <View style={styles.content}>
-        <Logo />
+        <Logo />  {/* Add Logo component above the text */}
+        
         <View style={styles.textContainer}>
           <Text style={styles.title}>FridgeBud</Text>
           <Text style={styles.subtitle}>the best bud</Text>
         </View>
+        
         <AuthButtons 
           onSignIn={handleSignIn} 
           onRegister={handleRegister} 

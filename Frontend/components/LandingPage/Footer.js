@@ -11,7 +11,7 @@ export default function Footer({ darkMode }) {
         <View style={styles.footerLogoContainer}>
           <ScanLine size={20} color={darkMode ? "#60A5FA" : "#2563EB"} />
           <Text style={[styles.footerLogoText, { color: darkMode ? "#FFFFFF" : "#111827" }]}>
-            FridgeScan
+            FridgeBud
           </Text>
         </View>
         <Text style={[styles.footerTagline, { color: darkMode ? "#D1D5DB" : "#6B7280" }]}>

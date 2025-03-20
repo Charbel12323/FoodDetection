@@ -55,7 +55,7 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
-  registerButton: {
+  learnMoreButton: {
     paddingVertical: 10,
     paddingHorizontal: 24,
     backgroundColor: '#F7AD56', // Orange color from the image
@@ -63,9 +63,10 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  registerButtonText: {
+  learnMoreButtonText: {
     color: '#000',
     fontSize: 16,
     fontWeight: '500',
   },
+  
 });

@@ -2,21 +2,14 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import styles from '@/styles/WelcomePageStyle';
 
-export default function AuthButtons({ onSignIn, onLearnMore }) {
+export default function AuthButtons({ onSignIn}) {
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity 
         style={styles.signInButton}
         onPress={onSignIn}
       >
-        <Text style={styles.signInButtonText}>Sign in</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.learnMoreButton}
-        onPress={onLearnMore}
-      >
-        <Text style={styles.learnMoreButtonText}>Learn More</Text>
+        <Text style={styles.signInButtonText}>Join Now</Text>
       </TouchableOpacity>
     </View>
   );
