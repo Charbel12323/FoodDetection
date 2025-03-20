@@ -3,6 +3,7 @@
 
 
 
+
 const BASE_URL = "https://fooddetection-production.up.railway.app";
 
 
@@ -77,3 +78,32 @@ export async function deleteIngredient(userId, ingredient) {
     throw error;
   }
 }
+export const updateIngredient = async (userId, originalName, updatedIngredient) => {
+  try {
+    // First, delete the original ingredient
+    await deleteIngredient(userId, originalName);
+    
+    // Then, add the updated ingredient with the new details
+    // You'll need to implement this part based on how you're adding ingredients
+    // This is a placeholder implementation
+    const response = await fetch(`/api/users/${userId}/ingredients`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        name: updatedIngredient.name,
+        // Add any other properties you want to save
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update ingredient');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating ingredient:', error);
+    throw error;
+  }
+};
