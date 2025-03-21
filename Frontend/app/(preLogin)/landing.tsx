@@ -6,7 +6,7 @@ import HeroSection from "@/components/LandingPage/HeroSection";
 import FeaturesSection from "@/components/LandingPage/FeatureSection";
 import HowItWorksSection from "@/components/LandingPage/HowItWorksSection";
 import Footer from "@/components/LandingPage/Footer";
-import styles from "@/styles/LandingPageStyle";  // Ensure this file exists
+import styles from "@/styles/LandingPageStyle";  
 import AuthButton from "@/components/LandingPage/AuthButton";
 
 export default function Landing() {

@@ -113,4 +113,11 @@ export default StyleSheet.create({
     color: "#373737",
     textDecorationLine: "underline",
   },
+  backButton: {
+    position: "absolute",
+    top: 20,
+    left: 20,
+    zIndex: 1, 
+  },
+  
 });

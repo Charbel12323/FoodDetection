@@ -11,7 +11,7 @@ export default function Layout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false, // or true if you want the default header
+        headerShown: false, 
       }}
     >
      
