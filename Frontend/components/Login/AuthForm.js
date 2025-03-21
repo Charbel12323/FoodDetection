@@ -147,6 +147,5 @@ export default function AuthForm({ authState }) {
           </View>
         </View>
       </View>
-    </View>
   );
 }
