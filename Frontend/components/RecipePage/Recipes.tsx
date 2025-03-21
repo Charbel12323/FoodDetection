@@ -5,6 +5,7 @@ import { getRecipes } from '@/api/recipeService';
 import RecipeCard from '@/components/RecipePage/RecipeCard';
 import { useRouter } from 'expo-router';
 import styles from '@/styles/RecipePageStyle';
+import BookLoader from '@/components/RecipePage/BookLoader';
 
 // Ensure COLORS is correctly imported or defined
 const COLORS = {
@@ -49,8 +50,7 @@ const RecipesPage = () => {
   if (userId === undefined || loading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={COLORS.accent} />
-        <Text style={{ marginTop: 12, color: COLORS.text }}>Loading your recipes...</Text>
+        <BookLoader message="Loading recipes..." />
       </SafeAreaView>
     );
   }

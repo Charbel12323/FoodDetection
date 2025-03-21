@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/useUserStore';
 import { getIngredients } from '@/api/ingredientService';
 import { generateRecipes } from '@/api/recipeService';
 import RecipeCard from '@/components/RecipePage/RecipeCard';
+import BookLoader from '@/components/RecipePage/BookLoader';
 
 // Import our color theme
 import pageStyles from '@/styles/RecipePageStyle';
@@ -64,8 +65,7 @@ export default function RecipeSuggestions() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={COLORS.accent} />
-          <Text style={styles.loadingText}>Looking for recipe ideas...</Text>
+          <BookLoader message="Looking for recipe ideas..." />
         </View>
       </SafeAreaView>
     );
