@@ -8,20 +8,24 @@ export default StyleSheet.create({
     flexGrow: 1,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    flexDirection: "row", // Align logo, title, and button horizontally
+    justifyContent: "space-between", // This ensures the space between the items
+    alignItems: "center", // Align vertically centered
+    paddingHorizontal: 20, // Adjust padding as needed
+    paddingVertical: 10,
   },
   logoContainer: {
-    flexDirection: "row",
+    flexDirection: "row", // Keep logo and title in one row
     alignItems: "center",
   },
+  logoImage: {
+    width: 40, // Size for logo image, adjust as needed
+    height: 40,
+    marginRight: 10, // Space between logo and title
+  },
   logoText: {
-    fontSize: 20,
-    fontWeight: "700",
-    marginLeft: 8,
+    fontSize: 24, // Adjust the size of the title
+    fontWeight: "bold",
   },
   headerRight: {
     flexDirection: "row",
@@ -246,8 +250,10 @@ export default StyleSheet.create({
   footer: {
     padding: 20,
     marginTop: 60,
+    alignItems: "center",
   },
   footerTop: {
+    alignItems: "center",
     marginBottom: 24,
   },
   footerLogoContainer: {

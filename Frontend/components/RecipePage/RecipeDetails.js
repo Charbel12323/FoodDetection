@@ -21,7 +21,7 @@ export default function RecipeDetails() {
     <SafeAreaView style={styles.container}>
       {/* Header Image */}
       <View style={styles.headerImageContainer}>
-        <Image source={{ uri: recipe.image }} style={styles.headerImage} />
+        <Image source={{ uri: 'https://via.placeholder.com/300'}} style={styles.headerImage} />
         {/* Back Button */}
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backButtonText}>←</Text>
