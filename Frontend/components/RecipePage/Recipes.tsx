@@ -64,16 +64,13 @@ const RecipesPage = () => {
       <ScrollView contentContainerStyle={styles.recipeList || { paddingBottom: 20 }}>
         {recipes.length > 0 ? (
           recipes.map((recipe, index) => (
-            <RecipeCard key={index} recipe={recipe} />
+            <RecipeCard key={index} recipe={recipe} showCookButton={false} showfav={false}/>
           ))
         ) : (
           <Text style={styles.noRecipesText}>No recipes found.</Text>
         )}
       </ScrollView>
 
-      <TouchableOpacity style={styles.addButton} onPress={() => router.push('/RecipeDetails')}>
-        <Text style={styles.addButtonText}>+ Add Recipe</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };

@@ -7,11 +7,13 @@ import styles from '@/styles/RecipeCardStyles';
 interface RecipeCardProps {
   recipe: any;
   showCookButton?: boolean;
+  showfav?: boolean;
 }
 
 export default function RecipeCard({
   recipe,
-  showCookButton = true
+  showCookButton = true,
+  showfav=true
 }: RecipeCardProps) {
   const { 
     isCooking, 
@@ -35,6 +37,7 @@ export default function RecipeCard({
         /> */}
 
         {/* Favorite Button */}
+        {showfav &&
         <TouchableOpacity
           style={[
             styles.favoriteButton,
@@ -50,7 +53,7 @@ export default function RecipeCard({
           >
             ♡
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
       </View>
 
       {/* Content */}
