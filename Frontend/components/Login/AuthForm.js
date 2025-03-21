@@ -115,12 +115,8 @@ export default function AuthForm({ authState }) {
             </View>
           ) : null}
 
-          {/* Forgot Password (Login Only) */}
-          {isLogin && (
-            <TouchableOpacity style={styles.forgotPasswordContainer}>
-              <Text style={styles.forgotPasswordText}>forgot password?</Text>
-            </TouchableOpacity>
-          )}
+        
+      </View>
 
           {/* Authentication Button */}
           <TouchableOpacity
