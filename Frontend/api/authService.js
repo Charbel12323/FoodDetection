@@ -2,7 +2,7 @@
 
 // services/authService.js
 
-const BASE_URL = "http://192.168.1.66:3000";
+const BASE_URL = "fooddetection-production.up.railway.app";
 
 // or wherever your Express server runs
 
