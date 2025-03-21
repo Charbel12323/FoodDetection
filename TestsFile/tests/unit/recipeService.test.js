@@ -1,4 +1,4 @@
-const recipeService = require('../../services/recipeService');
+const recipeService = require('../../../Backend/services/recipeService');
 
 // Mock the pool and client
 const mockQuery = jest.fn();
@@ -11,7 +11,7 @@ jest.mock('../../config/db', () => ({
   })),
 }));
 
-const pool = require('../../config/db');
+const pool = require('../../../Backend/config/db');
 
 describe('recipeService', () => {
 
