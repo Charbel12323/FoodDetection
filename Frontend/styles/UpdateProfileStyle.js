@@ -27,6 +27,7 @@ export default StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
+    marginVertical: 10, // Adds vertical spacing before and after each button
   },
   buttonText: {
     color: '#fff',

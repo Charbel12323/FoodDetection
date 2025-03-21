@@ -12,7 +12,6 @@ export default function UpdateProfile() {
   const router = useRouter();
 
   const handleUpdate = async () => {
-    // Debug log to check current values
     console.log('Updating user with:', { username, email });
 
     if (!username.trim() || !email.trim()) {
@@ -22,12 +21,16 @@ export default function UpdateProfile() {
 
     try {
       await updateUser({ username, email });
-      alert('Success', 'Profile updated successfully.');
+      Alert.alert('Success', 'Profile updated successfully.');
       router.back();
     } catch (error) {
       console.error('Update error:', error);
-      alert('Error', 'Failed to update profile.');
+      Alert.alert('Error', 'Failed to update profile.');
     }
+  };
+
+  const handleBack = () => {
+    router.push('/(MainPage)/MainPage'); // Navigates back to the main page (root route)
   };
 
   return (
@@ -50,6 +53,10 @@ export default function UpdateProfile() {
       />
       <TouchableOpacity onPress={handleUpdate} style={styles.button}>
         <Text style={styles.buttonText}>Update Profile</Text>
+      </TouchableOpacity>
+      {/* Back Button */}
+      <TouchableOpacity onPress={handleBack} style={styles.button}>
+        <Text style={styles.buttonText}>Back to Home</Text>
       </TouchableOpacity>
     </View>
   );
