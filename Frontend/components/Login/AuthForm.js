@@ -137,14 +137,7 @@ export default function AuthForm({ darkMode, authState }) {
           </View>
         )}
 
-        {/* Forgot Password (Login Only) */}
-        {isLogin && (
-          <TouchableOpacity style={styles.forgotPasswordContainer}>
-            <Text style={[styles.forgotPasswordText, { color: darkMode ? "#60A5FA" : "#2563EB" }]}>
-              Forgot Password?
-            </Text>
-          </TouchableOpacity>
-        )}
+        
       </View>
 
       {/* Authentication Button */}

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
-export const useUserStore = create((set) => ({
+export const useUserStore = create((set, get) => ({
   user: null, // Initial state is no user logged in
 
   // Function to set the logged-in user and persist it to AsyncStorage
@@ -27,6 +27,23 @@ export const useUserStore = create((set) => ({
       }
     } catch (error) {
       console.error('Failed to load user from storage:', error);
+    }
+  },
+
+  // Function to update the user data both in the store and in AsyncStorage
+  updateUser: async (newData) => {
+    const currentUser = get().user;
+    if (!currentUser) {
+      console.error('No user is logged in.');
+      return;
+    }
+    // Merge the existing user data with the new data
+    const updatedUser = { ...currentUser, ...newData };
+    try {
+      await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+      set({ user: updatedUser });
+    } catch (error) {
+      console.error('Error updating user in storage:', error);
     }
   },
 }));
