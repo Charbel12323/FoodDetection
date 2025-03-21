@@ -5,7 +5,6 @@ import {
   TouchableOpacity, 
   TouchableWithoutFeedback, 
   Animated, 
-  Dimensions, 
   Platform 
 } from 'react-native';
 import { useUserStore } from '@/stores/useUserStore';
@@ -15,7 +14,8 @@ import {
   Heart, 
   LogOut, 
   Menu, 
-  X 
+  X,
+  User // New icon for Update Profile
 } from 'react-native-feather';
 import styles from '@/styles/SideBarStyle';
 import { useRouter } from 'expo-router';
@@ -30,23 +30,23 @@ export default function SideBar() {
   const [isVisible, setIsVisible] = useState(false);
   const [activeItem, setActiveItem] = useState('Home');
 
-  // Animations
+  // Animation values
   const slideAnim = useRef(new Animated.Value(SIDEBAR_WIDTH)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  // Even though there are 4 visible items (3 menu + 1 footer), we allocate 6 animation values as in your examples.
   const itemsAnim = useRef([...Array(6)].map(() => new Animated.Value(50))).current;
 
+  // Updated menu items including the Update Profile option
   const menuItems = [
     { id: 'Home', icon: Home, label: 'Home' },
     { id: 'Inventory', icon: ShoppingCart, label: 'Inventory' },
     { id: 'Recipes', icon: Heart, label: 'Recipes' },
+    { id: 'UpdateProfile', icon: User, label: 'Update Profile' } // New entry
   ];
 
   const footerItems = [
     { id: 'Logout', icon: LogOut, label: 'Logout' },
   ];
 
-  // Toggle sidebar open/close
   const toggleSidebar = () => {
     Animated.timing(fadeAnim, {
       toValue: isVisible ? 0 : 0.5,
@@ -63,7 +63,6 @@ export default function SideBar() {
     setIsVisible(!isVisible);
 
     if (!isVisible) {
-      // Animate menu items in
       itemsAnim.forEach((anim, index) => {
         Animated.timing(anim, {
           toValue: 0,
@@ -73,12 +72,10 @@ export default function SideBar() {
         }).start();
       });
     } else {
-      // Reset animations when closing
       itemsAnim.forEach(anim => anim.setValue(50));
     }
   };
 
-  // Close sidebar
   const closeSidebar = () => {
     Animated.timing(fadeAnim, {
       toValue: 0,
@@ -92,12 +89,10 @@ export default function SideBar() {
       useNativeDriver: true,
     }).start(() => {
       setIsVisible(false);
-      // Reset animations
       itemsAnim.forEach(anim => anim.setValue(50));
     });
   };
 
-  // Handle item press: navigate based on selection or logout if selected.
   const handleItemPress = (id) => {
     setActiveItem(id);
 
@@ -107,14 +102,14 @@ export default function SideBar() {
       router.push('/(MainPage)/MainPage');
     } else if (id === 'Recipes') {
       router.push('/(Recipes)/Recipes');
+    } else if (id === 'UpdateProfile') {
+      router.push('/(UpdateProfilePage)/UpdatePage'); // Navigate to the update profile page
     } else if (id === 'Logout') {
-      // Logout: clear user and navigate to login
       clearUser();
       router.push('/(preLogin)/login');
       return;
     }
 
-    // Auto-close on mobile platforms
     if (Platform.OS !== 'web') {
       setTimeout(closeSidebar, 300);
     }
@@ -195,7 +190,6 @@ export default function SideBar() {
           ))}
         </View>
 
-        {/* Divider */}
         <View style={styles.divider} />
 
         {/* Footer Items */}
@@ -231,7 +225,6 @@ export default function SideBar() {
           ))}
         </View>
 
-        {/* Version */}
         <Text style={styles.versionText}>Version 1.0.0</Text>
       </Animated.View>
     </View>
