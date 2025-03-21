@@ -1,8 +1,9 @@
 const { fetchRecipeImage } = require('./spoonacularService.js');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
-const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+// Change how we access the API key to make it testable
+const getApiKey = () => process.env.GEMINI_API_KEY || "";
+const getModelName = () => process.env.GEMINI_MODEL || "gemini-1.5-flash";
 
 /**
  * generateRecipes
@@ -13,8 +14,9 @@ const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-1.5-flash";
  * @returns {Promise<Object>} - JSON object containing recipe suggestions.
  */
 async function generateRecipes(ingredients) {
-  // 1. Check for API key
-  if (!GEMINI_API_KEY) {
+  // 1. Check for API key - now using the function to get latest value
+  const apiKey = getApiKey();
+  if (!apiKey) {
     console.warn("No GEMINI_API_KEY found. Returning mock recipes for testing.");
     return {
       recipes: [
@@ -33,16 +35,15 @@ async function generateRecipes(ingredients) {
   }
 
   // 2. Create a new GenerativeAI client
-  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+  const genAI = new GoogleGenerativeAI(apiKey);
 
   // 3. Select the model (e.g. "gemini-1.5-flash")
   const model = genAI.getGenerativeModel({
-    model: MODEL_NAME,
+    model: getModelName(),
     temperature: 0.7,  // optional for creative variety
     top_p: 0.95        // optional for nucleus sampling
   });
 
-  // 4. Build a strong prompt for STRICT JSON output with detailed instructions
   const prompt = `
   You are an AI chef creating recipes for beginners. You MUST return valid JSON with NO additional text.
   Do not include markdown fences, code blocks, or explanations.
@@ -171,4 +172,10 @@ async function generateRecipes(ingredients) {
   }
 }
 
-module.exports = { generateRecipes };
+// Export functions for testing
+module.exports = { 
+  generateRecipes,
+  // Export these for testing
+  getApiKey,
+  setApiKey: (key) => process.env.GEMINI_API_KEY = key
+};
