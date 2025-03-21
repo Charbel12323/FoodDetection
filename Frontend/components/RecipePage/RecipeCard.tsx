@@ -28,7 +28,11 @@ export default function RecipeCard({
     <TouchableOpacity style={styles.card} onPress={handlePress}>
       {/* Image Section */}
       <View >
-
+        {/* <Image
+          source={{ uri: imageUri }}
+          style={styles.image}
+          resizeMode="cover"
+        /> */}
 
         {/* Favorite Button */}
         <TouchableOpacity

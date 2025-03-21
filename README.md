@@ -71,7 +71,7 @@ The Fridge Scanning App addresses these challenges through:
 
 ### Frontend
 - React Native & NativeWind (Mobile)
-- Next.js & Tailwind CSS (Web)
+
 
 ### Backend
 - Node.js
@@ -102,81 +102,13 @@ cd frontend
 npm install
 ```
 
-3. Install backend dependencies
-```bash
-cd backend
-npm install
-```
+## To Run Project
 
-## 🚀 Database Setup 
-### 1️⃣ Create the `.env` File in `/backend` Directory  
-Example `.env`:  
-```env
-DB_HOST=localhost
-DB_USER=postgres
-DB_PASSWORD=your_postgres_password
-DB_NAME=fridgeApp
-DB_PORT=5432
-OPENAI_API_KEY=your_openai_api_key
-```  
-👉 Important:  
-- Ensure the environment variable is `DB_PASSWORD` (not `DB_PASS`).  
-- Use the same credentials you configured for PostgreSQL.  
-- If you're not using OpenAI yet, you can leave `OPENAI_API_KEY` empty.  
 
-### 2️⃣ Setup PostgreSQL Database  
-Use `psql` to connect to your PostgreSQL server:  
-```bash
-psql -h localhost -U postgres -d fridgeApp
-```  
-If `fridgeApp` doesn’t exist, create it:  
-```sql
-CREATE DATABASE "fridgeApp";
-```  
+1. Head to the frontend directory
+2. Run npx expo start
 
-### 3️⃣ Create Required Tables  
-Inside `psql`, run the following SQL scripts to set up your tables:  
-🔸 **Users Table**  
-```sql
-CREATE TABLE users (
-  user_id SERIAL PRIMARY KEY,
-  username VARCHAR(255) NOT NULL,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL
-);
-```  
-🔸 **User Ingredients Table**  
-```sql
-CREATE TABLE user_ingredients (
-  id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-  ingredient VARCHAR(255) NOT NULL
-);
-```  
-👉 Optional: Create additional tables (`recipes`, `shopping_list`) for extended features.  
 
-### 4️⃣ Verify Tables (Optional but recommended)  
-List all tables:  
-```sql
-\dt
-```  
-Check if `users` and `user_ingredients` tables exist.  
-Test data retrieval:  
-```sql
-SELECT * FROM users;
-SELECT * FROM user_ingredients;
-```  
-
-### Running the servers
-
-Start the development servers:
-```bash
-# Frontend
-npx expo start 
-
-# Backend
-node server.js
-```
 
 ## Project Structure
 ```

@@ -1,9 +1,9 @@
-// components/RecipeDetails.tsx
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useRecipeDetails } from '@/hooks/useRecipeDetails';
 import { styles } from '@/styles/RecipeDetails';
+import BookLoader from '@/components/RecipePage/BookLoader'; // import loader
 
 export default function RecipeDetails() {
   const router = useRouter();
@@ -12,8 +12,7 @@ export default function RecipeDetails() {
   if (loading || !recipe) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4CAF50" />
-        <Text>Loading Recipe...</Text>
+        <BookLoader message="Loading Recipe..." />
       </View>
     );
   }

@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, Animated, Image, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, Animated, Image } from 'react-native';
 import { CameraView } from 'expo-camera';
-import { LinearGradient } from 'expo-linear-gradient';
 import styles from '@/styles/CameraScannerStyle';
 
 export default function CameraViewComponent({ cameraRef, loading, onCapture, flashMode, toggleFlash }) {
@@ -79,8 +78,7 @@ export default function CameraViewComponent({ cameraRef, loading, onCapture, fla
                 transform: [{ rotate: spin }],
               }}
             />
-            <ActivityIndicator size="large" color="#ffffff" style={{ marginTop: 15 }} />
-            <Text style={styles.loadingText}>Scanning fridge...</Text>
+            <Text style={[styles.loadingText, { marginTop: 15 }]}>Scanning fridge...</Text>
           </View>
         </View>
       )}

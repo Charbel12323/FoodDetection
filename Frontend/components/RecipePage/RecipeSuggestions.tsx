@@ -1,10 +1,10 @@
-// components/RecipeSuggestions.tsx
 import React from 'react';
-import { SafeAreaView, View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { SafeAreaView, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import RecipeCard from '@/components/RecipePage/RecipeCard';
 import { useRecipeSuggestions } from '@/hooks/useRecipeSuggestions';
 import { baseStyles, layoutStyles } from '@/styles/RecipeSuggestions';
+import BookLoader from '@/components/RecipePage/BookLoader'; // import loader
 
 export default function RecipeSuggestions() {
   const router = useRouter();
@@ -14,8 +14,7 @@ export default function RecipeSuggestions() {
     return (
       <SafeAreaView style={baseStyles.safeArea}>
         <View style={baseStyles.loadingContainer}>
-          <ActivityIndicator size="large" color="#4CAF50" />
-          <Text>Loading recipes...</Text>
+          <BookLoader message="Loading recipes..." />
         </View>
       </SafeAreaView>
     );
