@@ -1,10 +1,9 @@
 # 🧪 Testing Document - Food Detection Project
-SENG 401 – Team Project  
-Team Members: [Add names]
+
 
 ---
 
-## ✅ Test Plan
+## Test Plan
 The purpose of the test plan is to ensure the **Backend API** for the Food Detection system is robust, reliable, and functions as intended.  
 We focus on **unit testing**, **integration testing**, and **validation** across:
 
@@ -14,7 +13,7 @@ We focus on **unit testing**, **integration testing**, and **validation** across
 
 ---
 
-## ✅ Testing Strategy
+## Testing Strategy
 
 ### 1. **Unit Testing**
 - **Goal:** Ensure each controller/service function works in isolation.
@@ -34,7 +33,7 @@ We focus on **unit testing**, **integration testing**, and **validation** across
 
 ---
 
-## ✅ Unit Test Coverage
+## Unit Test Coverage
 
 | Controller / Service         | % Statements | % Branch | % Functions | % Lines |
 |------------------------------|--------------|----------|-------------|---------|
@@ -49,11 +48,11 @@ We focus on **unit testing**, **integration testing**, and **validation** across
 |-----------------------------|--------------|----------|-------------|---------|
 | geminiService               | 97.95%       | 92.30%   | 100%        | 97.87%  |
 | recipeService               | 100%         | 100%     | 100%        | 100%    |
-| spoonacularService          | 27.27%       | 0%       | 0%          | 27.27%  |
+
 
 ---
 
-## ✅ Integration Test Coverage
+## Integration Test Coverage
 
 | Route                | Tests Description                                 | Status  |
 |----------------------|---------------------------------------------------|---------|
@@ -65,7 +64,7 @@ We focus on **unit testing**, **integration testing**, and **validation** across
 
 ---
 
-## ✅ Test Data Set
+## Test Data Set
 
 ### 1. **Test Users**
 | Username | Password  |
@@ -87,7 +86,7 @@ We focus on **unit testing**, **integration testing**, and **validation** across
 
 ---
 
-## ✅ Expected vs Actual Results
+## Expected vs Actual Results
 
 | Test Description                                 | Expected Result                        | Actual Result | Status  |
 |--------------------------------------------------|---------------------------------------|---------------|---------|
@@ -103,7 +102,7 @@ We focus on **unit testing**, **integration testing**, and **validation** across
 
 ---
 
-## ✅ Test Results Summary
+## Test Results Summary
 
 Command:  
 ```bash
@@ -119,36 +118,9 @@ Time:        3.809 s
 Ran all test suites.
 ```
 
-Coverage Summary  
---------------------------|---------|----------|---------|---------|-------------------
-File                      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
---------------------------|---------|----------|---------|---------|-------------------
-All files                 |   95.51 |    88.23 |      90 |   95.41 |                   
- Backend                  |    90.9 |       75 |       0 |    90.9 |                   
-  server.js               |    90.9 |       75 |       0 |    90.9 | 30-31             
- Backend/config           |     100 |      100 |     100 |     100 |                   
-  db.js                   |     100 |      100 |     100 |     100 |                  
- Backend/controllers      |     100 |    96.87 |     100 |     100 |                  
-  authController.js       |     100 |      100 |     100 |     100 |                  
-  geminiController.js     |     100 |      100 |     100 |     100 |                  
-  ingredientController.js |     100 |    91.66 |     100 |     100 | 22               
-  openaiController.js     |     100 |      100 |     100 |     100 |                  
-  recipeController.js     |     100 |      100 |     100 |     100 |                  
- Backend/routes           |     100 |      100 |     100 |     100 |                  
-  authRoutes.js           |     100 |      100 |     100 |     100 |                  
-  geminiRoutes.js         |     100 |      100 |     100 |     100 |                  
-  ingredientRoutes.js     |     100 |      100 |     100 |     100 |                  
-  openaiRoutes.js         |     100 |      100 |     100 |     100 |                  
-  recipeRoutes.js         |     100 |      100 |     100 |     100 |                  
- Backend/services         |   89.53 |       80 |    87.5 |   89.28 |                  
-  geminiService.js        |   97.95 |     92.3 |     100 |   97.87 | 112              
-  recipeService.js        |     100 |      100 |     100 |     100 |                             
---------------------------|---------|----------|---------|---------|-------------------
-
-
 ---
 
-## ✅ Validation Plan
+## Validation Plan
 
 ### 1. Validation Criteria
 | Test Type             | Validation Goal                           | Pass Criteria                                        |
@@ -169,7 +141,7 @@ All files                 |   95.51 |    88.23 |      90 |   95.41 |
 
 ---
 
-## ✅ Tools & Environment
+## Tools & Environment
 
 | Tool            | Version / Description     |
 |-----------------|---------------------------|
@@ -179,3 +151,66 @@ All files                 |   95.51 |    88.23 |      90 |   95.41 |
 | PostgreSQL      | Cloud DB (mocked during tests) |
 | OpenAI API      | Mocked for testing        |
 | Gemini API      | Mocked for testing        |
+
+## How to Run
+Follow these steps to run the **test suites** for the **Food Detection Project Backend API** in **development mode**.
+
+---
+
+1. Install Dependencies (Development Mode)
+
+Install all the necessary **development dependencies** before running the tests.
+
+Run the following command to install **TypeScript**, **Jest**, and additional testing tools as **devDependencies**:
+
+```bash
+npm install --save-dev typescript jest ts-jest @types/jest supertest @types/supertest
+```
+
+Once installed, your project will be ready for unit and integration testing.
+
+---
+
+2. Configure `package.json` Scripts
+
+Ensure the following `scripts` section is present in the **backend** project's `package.json` file:
+
+```json
+"scripts": {
+  "start": "node server.js",
+  "test": "jest --coverage"
+}
+```
+
+- `start`: Runs the backend server.
+- `test`: Runs all tests with Jest and generates a coverage report.
+
+---
+
+3. Configure Environment Variables for Testing
+
+Create a `.env` file in the **backend** root directory. This file should include all environment variables required for running tests in **development mode**.
+
+Example `.env.test` file:
+
+```
+DATABASE_URL=postgres://localhost:5432/food_detection_test
+OPENAI_API_KEY=dev-test-openai-key
+GEMINI_API_KEY=dev-test-gemini-key
+JWT_SECRET=dev-testing-secret
+```
+
+> **Note:** During testing, external services like OpenAI and Gemini are mocked. Real API keys are not required.
+
+---
+
+## 4. Run Tests in Development Mode
+
+To run all **unit** and **integration** tests with coverage, use the following command:
+
+```bash
+npm run test
+```
+
+## Testing Notes
+- "spoonacularService.js" was not tested simply because the spoonacular API was not used any more in the final version.
