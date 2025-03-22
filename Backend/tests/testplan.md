@@ -1,27 +1,30 @@
 # 🧪 Testing Document - Food Detection Project
 
+
 ---
 
-## Overview
+## Test Plan
+The purpose of the test plan is to ensure the **Backend API** for the Food Detection system is robust, reliable, and functions as intended.  
+We focus on **unit testing**, **integration testing**, and **validation** across:
 
-This test plan is designed to ensure that the Food Detection system's backend API and associated services are robust, reliable, and function as intended. Our testing strategy includes:
-
-- **Unit Testing:** Verifying individual controller/service functions in isolation.
-- **Integration Testing:** Ensuring that routes, controllers, and services work together seamlessly.
-- **Exploratory Testing:** Conducting time-boxed sessions to uncover usability issues, edge cases, and unexpected behaviors.
+- Controllers (API endpoints)
+- Services (business logic, database queries, external APIs)
+- Routes (HTTP interface)
 
 ---
 
 ## Testing Strategy
 
-### 1. Unit Testing
+### 1. **Unit Testing**
 - **Goal:** Ensure each controller/service function works in isolation.
 - **Method:** Mock external dependencies (database, LLM APIs).
-- **Tools:** Jest, along with mocking libraries.
+- **Tools:**  
+  - `Jest` for unit testing  
+  - `Mocking` for DB/API services
 
-### 2. Integration Testing
-- **Goal:** Verify that routes, controllers, and services work together.
-- **Method:** Use Supertest to simulate HTTP requests.
+### 2. **Integration Testing**
+- **Goal:** Verify routes, controllers, and services work together.
+- **Method:** Use `Supertest` to simulate real HTTP requests to routes.
 - **Focus:** Database interactions, API calls, HTTP responses.
 
 ### 3. **End-to-End Testing** (Optional but recommended)
@@ -47,32 +50,8 @@ This test plan is designed to ensure that the Food Detection system's backend AP
 | recipeService               | 100%         | 100%     | 100%        | 100%    |
 
 
-
-### 4. Exploratory Testing
-- **Goal:** Identify usability issues, edge cases, and unexpected behaviors that may not be covered by scripted tests.
-- **Approach:** Conduct time-boxed sessions focused on specific charters.
-- **Charters:**
-  - **Charter 1: Authentication and Session Management**  
-    *Objective:* Verify sign-up, login, logout, and session persistence under normal and edge-case scenarios.  
-    *Steps:* Test sign-up with valid/invalid data; log in with valid/invalid credentials; test logout and session persistence.  
-    *Expected Outcome:* Clear error messages and smooth authentication flows.
-  
-  - **Charter 2: Inventory Management**  
-    *Objective:* Ensure that adding, updating, deleting, and categorizing ingredients functions correctly.  
-    *Steps:* Add valid ingredients (e.g., "Tomato"); attempt invalid inputs; test deletion; verify categorization (e.g., "pickle" should be classified as a vegetable).  
-    *Expected Outcome:* Inventory accurately reflects changes and categorization is correct.
-  
-  - **Charter 3: Recipe Suggestion Flow**  
-    *Objective:* Validate the end-to-end flow of generating recipes via Gemini/OpenAI integration.  
-    *Steps:* Submit a valid ingredient list and verify that a recipe list is returned; test with an empty or malformed list; note if scanning takes longer than expected.  
-    *Expected Outcome:* Clear loading feedback when scanning delays occur and correct recipe output.
-  
-  - **Charter 4: UI and Navigation**  
-    *Objective:* Ensure the overall UI is responsive, intuitive, and that navigation flows work seamlessly.  
-    *Steps:* Use the sidebar to navigate between views; test rapid tapping and responsiveness across different screen sizes.  
-    *Expected Outcome:* Seamless navigation and smooth UI transitions.
-
 ---
+
 ## Integration Test Coverage
 
 | Route                | Tests Description                                 | Status  |
@@ -87,19 +66,19 @@ This test plan is designed to ensure that the Food Detection system's backend AP
 
 ## Test Data Set
 
-### Test Users
+### 1. **Test Users**
 | Username | Password  |
 |----------|-----------|
 | testuser | testpass  |
 
-### Test Ingredients
+### 2. **Test Ingredients**
 | Ingredient Name |
 |-----------------|
 | Tomato          |
 | Cheese          |
 | Chicken         |
 
-### Test Recipe Request (Gemini/OpenAI)
+### 3. **Test Recipe Request (Gemini/OpenAI)**
 | Type     | Data                                                          |
 |----------|---------------------------------------------------------------|
 | Image    | Base64 encoded image of food (for OpenAI)                     |
@@ -107,21 +86,22 @@ This test plan is designed to ensure that the Food Detection system's backend AP
 
 ---
 
-## Expected vs. Actual Results
+## Expected vs Actual Results
 
 | Test Description                                 | Expected Result                        | Actual Result | Status  |
-|--------------------------------------------------|----------------------------------------|---------------|---------|
-| User signup (valid data)                         | `201 Created` and user object          | `201 Created` | ✅ PASS |
-| User login (valid credentials)                   | `200 OK` and JWT token                 | `200 OK`      | ✅ PASS |
-| Add ingredient                                   | `200 OK` and confirmation message      | `200 OK`      | ✅ PASS |
-| Get ingredients (existing user)                  | List of ingredients                    | Matches       | ✅ PASS |
-| Delete ingredient (valid ID)                     | `200 OK` and delete confirmation       | `200 OK`      | ✅ PASS |
-| Gemini recipe generation (valid request)         | JSON recipe list                       | JSON received | ✅ PASS |
-| OpenAI image analysis (valid image)              | JSON with analysis                     | JSON received | ✅ PASS |
-| DB failure (mocked)                              | `500 Internal Server Error` returned   | `500` error   | ✅ PASS |
-| Invalid recipe generation (missing ingredients)  | `400 Bad Request`                      | `400` error   | ✅ PASS |
+|--------------------------------------------------|---------------------------------------|---------------|---------|
+| User signup (valid data)                         | `201 Created` and user object         | `201 Created` | ✅ PASS |
+| User login (valid credentials)                   | `200 OK` and JWT token                | `200 OK`     | ✅ PASS |
+| Add ingredient                                   | `200 OK` and confirmation message     | `200 OK`     | ✅ PASS |
+| Get ingredients (existing user)                  | List of ingredients                   | Matches      | ✅ PASS |
+| Delete ingredient (valid ID)                     | `200 OK` and delete confirmation      | `200 OK`     | ✅ PASS |
+| Gemini recipe generation (valid request)         | JSON recipe list                      | JSON received | ✅ PASS |
+| OpenAI image analysis (valid image)              | JSON with analysis                    | JSON received | ✅ PASS |
+| DB failure (mocked)                              | `500 Internal Server Error` returned  | `500` error  | ✅ PASS |
+| Invalid recipe generation (missing ingredients)  | `400 Bad Request`                     | `400` error  | ✅ PASS |
 
 ---
+
 ## Test Results Summary
 
 Command:  
@@ -160,82 +140,17 @@ Ran all test suites.
 - Failures trigger debug sessions and are documented (none in latest test run).
 
 ---
-## Exploratory Testing Outcomes
-
-| **Session** | **Charter**                             | **Steps Taken**                                                                                                                                                                                                                                                                   | **Observations/Defects**                                                                                                                                                                                                             | **Severity** | **Notes/Next Steps**                                                                                   |
-|-------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|--------------------------------------------------------------------------------------------------------|
-| Session 1   | Authentication and Session Management   | - Signed up with valid data.<br>- Tried invalid sign-up with missing/incorrect data.<br>- Logged in with valid credentials.<br>- Tested logout by clicking the logout button.                                                                                                  | - Error messages for username/password requirements are fragmented: first, it complains about numbers (e.g., "no numbers allowed") and then, on subsequent attempts, it flags the minimum length requirement.                     | Minor        | Display all username and password requirements upfront and/or implement inline validation for immediate feedback.  |
-| Session 2   | Inventory Management                    | - Added a valid ingredient (e.g., "Tomato") and confirmed it appears in the inventory list.<br>- Attempted to add ingredients with empty input and overly long text.<br>- Tested deletion of ingredients.<br>- Tested categorization by adding a "pickle".                         | - Error handling for empty input is unclear.<br>- The system miscategorizes some ingredients: for example, a "pickle" is identified as a condiment instead of a vegetable.                | Minor        | Enhance input validation.<br>Review and adjust the categorization logic to correctly classify ingredients like pickles as vegetables.                  |
-| Session 3   | Recipe Suggestion Flow                  | - Submitted a valid ingredient list and verified that a recipe list is returned.<br>- Tested with an empty or malformed ingredient list.<br>- Noted that scanning sometimes takes longer than expected.                                                               | - Scanning response is slower at times, and there is no message to inform the user that the process is taking longer (or to check their connection).                                                                                                                                           | Minor        | Enhance the loading indicator/message during scanning to inform users when processing is slower than usual, possibly advising them to check their connection.                |
-| Session 4   | UI and Navigation                       | - Navigated between different sections using the sidebar.<br>- Tapped buttons rapidly to test responsiveness.<br>- Resized the browser window and tested on different screen sizes.                                                                                        | - Sidebar occasionally flickers when navigation buttons are tapped rapidly.<br>- Some animations could be smoother under high interaction loads.                                                                                  | Minor        | Review animation timing and implement debouncing on rapid interactions to ensure smooth transitions.  |
-
----
-
-## Reporting and Follow-Up
-
-### Summary of Findings
-
-- **Authentication and Session Management:**  
-  - **Fragmented Validation Feedback:** Error messages for username/password requirements are provided in multiple steps, requiring multiple attempts before the user fully understands the requirements.
-
-- **Inventory Management:**  
-  - **Input Validation Issues:** Error handling for empty or invalid ingredient inputs is unclear.  
-  - **Categorization Accuracy:** Some ingredients are misclassified; for example, a "pickle" is identified as a condiment instead of a vegetable.
-
-- **Recipe Suggestion Flow:**  
-  - **Slow Scanning Feedback:** The scanning process sometimes takes longer than expected without informing the user, leaving them unaware of potential network or processing delays.
-
-- **UI and Navigation:**  
-  - **Sidebar Flickering:** Rapid tapping of navigation buttons causes occasional flickering in the sidebar.
-
-### Prioritization of Issues
-
-All identified issues are currently classified as **Minor**, but they affect overall usability. Recommended actions:
-
-1. **Enhance Validation Feedback (Authentication):**  
-   - **Action:** Display all username and password requirements upfront or implement inline validation to provide immediate feedback.
-
-2. **Review and Adjust Categorization Logic (Inventory Management):**  
-   - **Action:** Update the categorization logic to correctly classify ingredients (e.g., ensuring that pickles are categorized as vegetables).
-
-3. **Improve Loading Feedback for Scanning (Recipe Suggestion Flow):**  
-   - **Action:** Implement a loading indicator or message to inform users if scanning takes longer than expected, advising them to check their connection if necessary.
-
-4. **Smooth Out Sidebar Animations (UI and Navigation):**  
-   - **Action:** Review animation timing and implement debouncing on rapid interactions to reduce flickering.
-
-### Plan for Retesting
-
-After fixes are implemented, retesting should focus on verifying that the issues have been resolved:
-
-- **Authentication Flow:**  
-  - Confirm that inline validations or upfront guidelines allow users to sign up without multiple attempts.
-
-- **Inventory Management:**  
-  - Test adding and updating ingredients to ensure items like pickles are correctly categorized as vegetables.
-
-- **Scanning Process:**  
-  - Verify that when scanning takes longer, a clear loading message is displayed and users are informed about potential connection issues.
-
-- **UI and Navigation:**  
-  - Re-test sidebar navigation and rapid tapping interactions to ensure any flickering has been resolved.
-
-Compile retesting notes and compare them against the original findings to confirm that the fixes are effective.
-
----
 
 ## Tools & Environment
 
-| Tool            | Version / Description                 |
-|-----------------|---------------------------------------|
-| Node.js         | v18.x.x                               |
-| Jest            | v29.x.x                               |
-| Supertest       | v6.x.x                                |
-| PostgreSQL      | Cloud DB (mocked during tests)        |
-| OpenAI API      | Mocked for testing                    |
-| Gemini API      | Mocked for testing                    |
-
----
+| Tool            | Version / Description     |
+|-----------------|---------------------------|
+| Node.js         | v18.x.x                   |
+| Jest            | v29.x.x                   |
+| Supertest       | v6.x.x                    |
+| PostgreSQL      | Cloud DB (mocked during tests) |
+| OpenAI API      | Mocked for testing        |
+| Gemini API      | Mocked for testing        |
 
 ## How to Run
 Follow these steps to run the **test suites** for the **Food Detection Project Backend API** in **development mode**.
