@@ -17,6 +17,11 @@ import useIngredients from "@/hooks/useIngredients";
 import { useUserStore } from "@/stores/useUserStore";
 import InventoryStyles from "@/styles/InventoryPage";
 
+
+import {
+  deleteIngredient,
+} from "@/api/ingredientService";
+
 const { width } = Dimensions.get("window");
 
 interface Ingredient {
@@ -38,7 +43,7 @@ const CATEGORIES = [
 const InventoryPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const { ingredients, loading, fadeAnim, translateY } = useIngredients();
+  const { ingredients, setIngredients, loading, fadeAnim, translateY } = useIngredients();
   const userId = useUserStore((state) => state.user?.user_id);
 
   const getConsistentCategory = (name: string): string => {
@@ -58,10 +63,10 @@ const InventoryPage: React.FC = () => {
       }
     }
 
+    // Fallback to hashing for a "consistent" random category
     const nameHash = lowercaseName
       .split("")
       .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-
     const categoriesWithoutAll = CATEGORIES.slice(1);
     return categoriesWithoutAll[nameHash % categoriesWithoutAll.length];
   };
@@ -93,6 +98,24 @@ const InventoryPage: React.FC = () => {
     return colors[category as keyof typeof colors] || "#6B7280";
   };
 
+  // 2) Use the service's deleteIngredient
+  const handleDeleteIngredient = async (ingredientName: string) => {
+    if (!userId) {
+      console.warn("No user ID available.");
+      return;
+    }
+    try {
+      // Calls your deleteIngredient(...) service method
+      await deleteIngredient(userId, ingredientName);
+
+      // Update local state on success
+      setIngredients((prev) => prev.filter((ing) => ing !== ingredientName));
+    } catch (error) {
+      console.error("Error deleting ingredient:", error);
+    }
+  };
+
+
   const renderItem = ({ item }: { item: Ingredient }) => (
     <View style={InventoryStyles.ingredientCard}>
       <View style={InventoryStyles.ingredientLeft}>
@@ -104,18 +127,18 @@ const InventoryPage: React.FC = () => {
         />
         <View>
           <Text style={InventoryStyles.ingredientName}>{item.name}</Text>
-          <Text style={InventoryStyles.ingredientMeta}>
-            {item.category}
-          </Text>
+          <Text style={InventoryStyles.ingredientMeta}>{item.category}</Text>
         </View>
       </View>
+      {/* Delete button on the right */}
+      <TouchableOpacity onPress={() => handleDeleteIngredient(item.name)}>
+        <Feather name="trash" size={20} color="#EF4444" />
+      </TouchableOpacity>
     </View>
   );
 
-  // We can place the top section in a separate component or use ListHeaderComponent
   const renderHeader = () => (
     <>
-      {/* Header Section */}
       <LinearGradient
         colors={["#B9C5A9", "#9AAA8C"]}
         start={{ x: 0, y: 0 }}
@@ -140,12 +163,9 @@ const InventoryPage: React.FC = () => {
 
         <View style={headerStyles.welcomeContainer}>
           <Text style={headerStyles.welcomeText}>My Ingredients</Text>
-          <Text style={headerStyles.welcomeSubtext}>
-            Manage your food items
-          </Text>
+          <Text style={headerStyles.welcomeSubtext}>Manage your food items</Text>
         </View>
 
-        {/* Dashboard Cards */}
         <View style={headerStyles.cardsContainer}>
           <LinearGradient
             colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.1)"]}
@@ -164,9 +184,7 @@ const InventoryPage: React.FC = () => {
         </View>
       </LinearGradient>
 
-      {/* Content Container */}
       <View style={InventoryStyles.contentContainer}>
-        {/* Search Bar */}
         <View style={InventoryStyles.searchContainer}>
           <View style={InventoryStyles.searchBar}>
             <Feather
@@ -190,7 +208,6 @@ const InventoryPage: React.FC = () => {
           </View>
         </View>
 
-        {/* Category Filter */}
         <View style={InventoryStyles.categoryContainer}>
           <FlatList
             horizontal
@@ -226,7 +243,6 @@ const InventoryPage: React.FC = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF8D9" }}>
       <StatusBar barStyle="light-content" />
-
       {loading ? (
         <View style={InventoryStyles.loadingContainer}>
           <Text style={InventoryStyles.loadingText}>

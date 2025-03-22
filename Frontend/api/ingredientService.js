@@ -98,7 +98,7 @@ export const updateIngredient = async (userId, originalName, updatedIngredient) 
     if (!response.ok) {
       throw new Error('Failed to update ingredient');
     }
-    
+     
     return await response.json();
   } catch (error) {
     console.error('Error updating ingredient:', error);
