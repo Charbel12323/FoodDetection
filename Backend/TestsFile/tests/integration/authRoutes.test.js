@@ -2,8 +2,8 @@ require('dotenv').config();
 
 
 const request = require('supertest');
-const app = require('../../../Backend/server');
-const pool = require('../../../Backend/config/db');
+const app = require('../../../server');
+const pool = require('../../../config/db');
 const bcrypt = require('bcrypt');
 
 jest.mock('../../config/db');
