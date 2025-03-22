@@ -1,10 +1,12 @@
 // src/components/AuthForm.js
 import React from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { Eye, EyeOff } from "lucide-react-native";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react-native";
+import { useRouter } from "expo-router";
 import styles from "@/styles/Login";
 
 export default function AuthForm({ authState }) {
+  const router = useRouter();
   const {
     isLogin,
     email,
@@ -25,6 +27,14 @@ export default function AuthForm({ authState }) {
 
   return (
     <View style={styles.container}>
+      {/* Back Button on the Top Left */}
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => router.push('/(preLogin)/landing')}
+      >
+        <ArrowLeft size={24} color="#000" />
+      </TouchableOpacity>
+
       {/* Header Section - Yellow Background */}
       <View style={styles.headerSection}>
         <Text style={styles.formTitle}>
@@ -42,7 +52,7 @@ export default function AuthForm({ authState }) {
         {/* Input Fields */}
         <View style={styles.inputsContainer}>
           {/* Username field is shown only for sign-up */}
-          {!isLogin ? (
+          {!isLogin && (
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Enter your username</Text>
               <View style={styles.inputWrapper}>
@@ -56,7 +66,7 @@ export default function AuthForm({ authState }) {
                 />
               </View>
             </View>
-          ) : null}
+          )}
 
           {/* Email Field */}
           <View style={styles.inputGroup}>
@@ -99,7 +109,7 @@ export default function AuthForm({ authState }) {
           </View>
 
           {/* Confirm Password Field - Only for registration */}
-          {!isLogin ? (
+          {!isLogin && (
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Confirm your password</Text>
               <View style={styles.inputWrapper}>
@@ -113,39 +123,37 @@ export default function AuthForm({ authState }) {
                 />
               </View>
             </View>
-          ) : null}
+          )}
+        </View>
 
-        
-      </View>
+        {/* Authentication Button */}
+        <TouchableOpacity
+          style={styles.authButton}
+          onPress={handleAuth}
+          disabled={loading}
+        >
+          <Text style={styles.authButtonText}>
+            {isLogin ? "Sign in" : "Register"}
+          </Text>
+        </TouchableOpacity>
 
-          {/* Authentication Button */}
-          <TouchableOpacity
-            style={styles.authButton}
-            onPress={handleAuth}
-            disabled={loading}
-          >
-            <Text style={styles.authButtonText}>
-              {isLogin ? "Sign in" : "Register"}
+        {/* Message Text */}
+        {message && (
+          <Text style={styles.messageText}>
+            {message}
+          </Text>
+        )}
+
+        {/* Toggle Between Login and Sign-Up */}
+        <View style={styles.switchModeContainer}>
+          <Text style={styles.switchModeText}>
+            {isLogin ? "Need an account? " : "Have an account? "}
+            <Text style={styles.switchModeLink} onPress={toggleAuthMode}>
+              {isLogin ? "Create one" : "Sign in"}
             </Text>
-          </TouchableOpacity>
-
-          {/* Message Text */}
-          {message ? (
-            <Text style={styles.messageText}>
-              {message}
-            </Text>
-          ) : null}
-
-          {/* Toggle Between Login and Sign-Up */}
-          <View style={styles.switchModeContainer}>
-            <Text style={styles.switchModeText}>
-              {isLogin ? "Need an account? " : "Have an account? "}
-              <Text style={styles.switchModeLink} onPress={toggleAuthMode}>
-                {isLogin ? "Create one" : "Sign in"}
-              </Text>
-            </Text>
-          </View>
+          </Text>
         </View>
       </View>
+    </View>
   );
 }

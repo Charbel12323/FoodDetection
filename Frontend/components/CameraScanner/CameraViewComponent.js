@@ -71,7 +71,7 @@ export default function CameraViewComponent({ cameraRef, loading, onCapture, fla
         <View style={styles.loadingOverlay}>
           <View style={styles.loadingBox}>
             <Animated.Image
-              source={require('@/assets/images/fridge.png')} // Make sure fridge.png exists
+              source={require('@/assets/images/fridge.png')} 
               style={{
                 width: 100,
                 height: 100,

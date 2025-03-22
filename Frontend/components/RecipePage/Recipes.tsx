@@ -7,9 +7,8 @@ import { useRouter } from 'expo-router';
 import styles from '@/styles/RecipePageStyle';
 import BookLoader from '@/components/RecipePage/BookLoader';
 
-// Ensure COLORS is correctly imported or defined
 const COLORS = {
-  accent: '#FF5733', // Replace with actual color from styles if defined
+  accent: '#FF5733', 
   text: '#333333',
 };
 
@@ -17,7 +16,6 @@ const RecipesPage = () => {
   const [recipes, setRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // userId might be undefined while loading, null if not logged in
   const userId = useUserStore((state) => state.user?.user_id);
   const router = useRouter();
 

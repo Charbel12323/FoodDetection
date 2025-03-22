@@ -4,8 +4,7 @@
 
 const BASE_URL = "https://fooddetection-production.up.railway.app";
 
-// or wherever your Express server runs
-
+// Login Functionality
 export async function login(email, password) {
   const response = await fetch(`${BASE_URL}/api/login`, {
     method: 'POST',
@@ -19,6 +18,8 @@ export async function login(email, password) {
   return data;
 }
 
+
+//Signup Functionality
 export async function signup(username, email, password) {
   const response = await fetch(`${BASE_URL}/api/signup`, {
     method: 'POST',

@@ -7,7 +7,7 @@
 const BASE_URL = "https://fooddetection-production.up.railway.app";
 
 
-// Upload Base64 image to the server/OpenAI
+// Uploading Base64 image to the server/OpenAI
 export async function uploadBase64(photoBase64) {
   try {
     const response = await fetch(`${BASE_URL}/api/upload-base64`, {
@@ -64,7 +64,7 @@ export async function getIngredients(userId) {
 export async function deleteIngredient(userId, ingredient) {
   try {
     const response = await fetch(`${BASE_URL}/api/deleteIngredient`, {
-      method: 'POST', // or 'DELETE' if you prefer and update your backend accordingly
+      method: 'POST', 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, ingredient }),
     });
@@ -83,9 +83,7 @@ export const updateIngredient = async (userId, originalName, updatedIngredient) 
     // First, delete the original ingredient
     await deleteIngredient(userId, originalName);
     
-    // Then, add the updated ingredient with the new details
-    // You'll need to implement this part based on how you're adding ingredients
-    // This is a placeholder implementation
+    
     const response = await fetch(`/api/users/${userId}/ingredients`, {
       method: 'POST',
       headers: {
@@ -93,7 +91,7 @@ export const updateIngredient = async (userId, originalName, updatedIngredient) 
       },
       body: JSON.stringify({ 
         name: updatedIngredient.name,
-        // Add any other properties you want to save
+        
       }),
     });
     

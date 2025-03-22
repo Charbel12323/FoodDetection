@@ -1,4 +1,3 @@
-// src/screens/CameraScreen.js
 import React, { useState } from 'react';
 import { View, StatusBar } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';

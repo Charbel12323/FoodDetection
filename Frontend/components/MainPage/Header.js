@@ -18,7 +18,6 @@ function Header() {
   const router = useRouter();
 
   return (
-    // Using ScrollView to allow scrolling if content overflows
     <ScrollView contentContainerStyle={styles.container}>
       <HeaderUI />
       <View style={styles.cardsContainer}>
