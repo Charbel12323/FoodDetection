@@ -6,7 +6,7 @@ import HeroSection from "@/components/LandingPage/HeroSection";
 import FeaturesSection from "@/components/LandingPage/FeatureSection";
 import HowItWorksSection from "@/components/LandingPage/HowItWorksSection";
 import Footer from "@/components/LandingPage/Footer";
-import styles from "@/styles/LandingPageStyle";  
+import styles from "@/styles/LandingPageStyle";
 import AuthButton from "@/components/LandingPage/AuthButton";
 
 export default function Landing() {
@@ -16,17 +16,20 @@ export default function Landing() {
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF8D9"}}>
-      
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF8D9" }}>
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          padding: 16,
+          // no flex: 1 or height: 100% here
+        }}
+      >
         <HeroSection darkMode={darkMode} />
         <FeaturesSection darkMode={darkMode} />
         <HowItWorksSection darkMode={darkMode} />
         <Footer darkMode={darkMode} />
       </ScrollView>
     </SafeAreaView>
-
   );
 }
-
