@@ -7,10 +7,12 @@ const { width, height } = Dimensions.get('window');
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#FFF8D9',
+    
   },
   gradientBackground: {
-    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#FFF8D9',
+    
   },
   camera: {
     flex: 1,
@@ -154,6 +156,8 @@ export default StyleSheet.create({
   // Results screen styles
   resultContainer: {
     flex: 1,
+    backgroundColor: '#FFF8D9',
+
   },
   resultHeader: {
     padding: 20,
@@ -162,12 +166,12 @@ export default StyleSheet.create({
   resultTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: 'black',
     marginBottom: 5,
   },
   resultSubtitle: {
     fontSize: 16,
-    color: '#cccccc',
+    color: '#black',
     marginBottom: 20,
   },
   ingredientsList: {

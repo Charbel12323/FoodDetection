@@ -7,6 +7,7 @@ const cardSize = width * 0.4;
 export default StyleSheet.create({
   // Removed overflow: 'hidden' to allow scrolling
   container: {
+    backgroundColor: "#FFF8D9",
     flex: 1,
   },
   headerGradient: {

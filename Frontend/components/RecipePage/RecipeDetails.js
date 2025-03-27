@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useRecipeDetails } from '@/hooks/useRecipeDetails';
 import { styles } from '@/styles/RecipeDetails';
@@ -19,9 +19,8 @@ export default function RecipeDetails() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header Image */}
-      <View style={styles.headerImageContainer}>
-        <Image source={{ uri: 'https://via.placeholder.com/300'}} style={styles.headerImage} />
+      {/* Header (no image) */}
+      <View style={styles.header}>
         {/* Back Button */}
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backButtonText}>←</Text>

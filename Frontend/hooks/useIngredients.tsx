@@ -1,6 +1,7 @@
+// useIngredients.ts (or .js)
 import { useState, useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
-import { getIngredients } from '@/api/ingredientService';
+import { getIngredients, saveIngredients } from '@/api/ingredientService';
 import { useUserStore } from '@/stores/useUserStore';
 
 export default function useIngredients() {
@@ -59,5 +60,21 @@ export default function useIngredients() {
     return () => clearInterval(interval);
   }, [userId]);
 
-  return { ingredients, setIngredients, loading, fadeAnim, translateY };
+  // Add a new ingredient (API call + update state)
+  const addIngredient = async (name: string) => {
+    if (!userId) {
+      console.warn('No userId available.');
+      return;
+    }
+    try {
+      // Save new ingredient to the backend
+      await saveIngredients(userId, [name]);
+      // Update local state
+      setIngredients((prev) => [...prev, name]);
+    } catch (error) {
+      console.error('Error saving ingredient:', error);
+    }
+  };
+
+  return { ingredients, setIngredients, loading, fadeAnim, translateY, addIngredient };
 }
