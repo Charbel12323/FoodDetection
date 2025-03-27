@@ -21,7 +21,6 @@ import { deleteIngredient } from "@/api/ingredientService";
 
 const { width } = Dimensions.get("window");
 
-// Array of colors for random selection
 const RANDOM_COLORS = [
   "#F59E0B",
   "#10B981",
@@ -32,7 +31,6 @@ const RANDOM_COLORS = [
   "#6B7280",
 ];
 
-// Generate a consistent random color based on the ingredient name
 const getRandomColor = (ingredient: string): string => {
   let hash = 0;
   for (let i = 0; i < ingredient.length; i++) {
@@ -48,7 +46,6 @@ const InventoryPage: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newIngredient, setNewIngredient] = useState("");
 
-  // Process ingredients without category information
   const processedIngredients = ingredients.map((name: string) => ({ name }));
 
   const handleDeleteIngredient = async (ingredientName: string) => {
@@ -75,7 +72,6 @@ const InventoryPage: React.FC = () => {
   const renderItem = ({ item }: { item: { name: string } }) => (
     <View style={InventoryStyles.ingredientCard}>
       <View style={InventoryStyles.ingredientLeft}>
-        {/* Randomized colored line */}
         <View
           style={{
             width: 4,
@@ -179,7 +175,6 @@ const InventoryPage: React.FC = () => {
               </View>
             }
           />
-          {/* Add Button */}
           <TouchableOpacity
             style={InventoryStyles.addButton}
             onPress={() => setShowAddModal(true)}
@@ -188,7 +183,6 @@ const InventoryPage: React.FC = () => {
           </TouchableOpacity>
         </Animated.View>
       )}
-      {/* Modal for adding new ingredient */}
       <Modal
         transparent
         animationType="slide"
