@@ -1,7 +1,4 @@
-// styles/RecipeDetailsStyles.ts
 import { StyleSheet } from 'react-native';
-
-const HEADER_HEIGHT = 260;
 
 export const styles = StyleSheet.create({
   container: {
@@ -13,20 +10,15 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerImageContainer: {
-    width: '100%',
-    height: HEADER_HEIGHT,
-    position: 'relative',
-  },
-  headerImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
+  // New header style (no image)
+  header: {
+    flexDirection: 'row',
+    padding: 16,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#f7f7f7', // or any header background color you prefer
   },
   backButton: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     padding: 10,
     borderRadius: 20,
@@ -40,9 +32,6 @@ export const styles = StyleSheet.create({
     color: '#333',
   },
   favoriteButton: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     padding: 10,
     borderRadius: 20,
@@ -62,13 +51,13 @@ export const styles = StyleSheet.create({
     color: '#fff',
   },
   infoSection: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#FFF8D9',
     padding: 16,
   },
   recipeName: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#black',
     marginBottom: 10,
   },
   badgeRow: {
@@ -84,14 +73,13 @@ export const styles = StyleSheet.create({
     marginBottom: 4,
   },
   badgeText: {
-    color: '#fff',
+    color: '#black',
     fontSize: 12,
     fontWeight: '600',
   },
   // Tabs styling
   tabsContainer: {
     flexDirection: 'row',
-    borderBottomWidth: 0,
     backgroundColor: '#f5f5f5',
   },
   tab: {

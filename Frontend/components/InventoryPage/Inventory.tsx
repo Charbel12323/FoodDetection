@@ -5,10 +5,11 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
-  TextInput,
   Dimensions,
   StatusBar,
   Animated,
+  Modal,
+  TextInput,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -16,121 +17,72 @@ import headerStyles from "@/styles/InventoryHeader";
 import useIngredients from "@/hooks/useIngredients";
 import { useUserStore } from "@/stores/useUserStore";
 import InventoryStyles from "@/styles/InventoryPage";
-
-
-import {
-  deleteIngredient,
-} from "@/api/ingredientService";
+import { deleteIngredient } from "@/api/ingredientService";
 
 const { width } = Dimensions.get("window");
 
-interface Ingredient {
-  name: string;
-  category: string;
-}
-
-const CATEGORIES = [
-  "All",
-  "Fruits",
-  "Vegetables",
-  "Dairy",
-  "Meats",
-  "Grains",
-  "Condiments",
-  "Other",
+const RANDOM_COLORS = [
+  "#F59E0B",
+  "#10B981",
+  "#60A5FA",
+  "#EF4444",
+  "#8B5CF6",
+  "#EC4899",
+  "#6B7280",
 ];
 
+const getRandomColor = (ingredient: string): string => {
+  let hash = 0;
+  for (let i = 0; i < ingredient.length; i++) {
+    hash = ingredient.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % RANDOM_COLORS.length;
+  return RANDOM_COLORS[index];
+};
+
 const InventoryPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const { ingredients, setIngredients, loading, fadeAnim, translateY } = useIngredients();
+  const { ingredients, setIngredients, loading, fadeAnim, translateY, addIngredient } = useIngredients();
   const userId = useUserStore((state) => state.user?.user_id);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newIngredient, setNewIngredient] = useState("");
 
-  const getConsistentCategory = (name: string): string => {
-    const categoryMaps: Record<string, string[]> = {
-      Fruits: ["apple", "banana", "orange", "strawberry", "grape"],
-      Vegetables: ["carrot", "lettuce", "broccoli", "spinach", "onion"],
-      Dairy: ["milk", "cheese", "yogurt", "butter", "cream"],
-      Meats: ["beef", "chicken", "pork", "lamb", "turkey"],
-      Grains: ["rice", "bread", "pasta", "flour", "oat"],
-      Condiments: ["salt", "pepper", "oil", "vinegar", "sauce"],
-    };
+  const processedIngredients = ingredients.map((name: string) => ({ name }));
 
-    const lowercaseName = name.toLowerCase();
-    for (const [category, keywords] of Object.entries(categoryMaps)) {
-      if (keywords.some((keyword) => lowercaseName.includes(keyword))) {
-        return category;
-      }
-    }
-
-    // Fallback to hashing for a "consistent" random category
-    const nameHash = lowercaseName
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const categoriesWithoutAll = CATEGORIES.slice(1);
-    return categoriesWithoutAll[nameHash % categoriesWithoutAll.length];
-  };
-
-  const processedIngredients: Ingredient[] = ingredients.map((name: string) => ({
-    name,
-    category: getConsistentCategory(name),
-  }));
-
-  const filteredIngredients = processedIngredients.filter((item) => {
-    const matchesSearch = item.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || item.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const getCategoryColor = (category: string): string => {
-    const colors: Record<string, string> = {
-      Fruits: "#F59E0B",
-      Vegetables: "#10B981",
-      Dairy: "#60A5FA",
-      Meats: "#EF4444",
-      Grains: "#8B5CF6",
-      Condiments: "#EC4899",
-      Other: "#6B7280",
-    };
-    return colors[category as keyof typeof colors] || "#6B7280";
-  };
-
-  // 2) Use the service's deleteIngredient
   const handleDeleteIngredient = async (ingredientName: string) => {
     if (!userId) {
       console.warn("No user ID available.");
       return;
     }
     try {
-      // Calls your deleteIngredient(...) service method
       await deleteIngredient(userId, ingredientName);
-
-      // Update local state on success
       setIngredients((prev) => prev.filter((ing) => ing !== ingredientName));
     } catch (error) {
       console.error("Error deleting ingredient:", error);
     }
   };
 
+  const addNewIngredient = async () => {
+    if (newIngredient.trim() === "") return;
+    const ingredientToAdd = newIngredient.trim();
+    await addIngredient(ingredientToAdd);
+    setNewIngredient("");
+    setShowAddModal(false);
+  };
 
-  const renderItem = ({ item }: { item: Ingredient }) => (
+  const renderItem = ({ item }: { item: { name: string } }) => (
     <View style={InventoryStyles.ingredientCard}>
       <View style={InventoryStyles.ingredientLeft}>
         <View
-          style={[
-            InventoryStyles.categoryIndicator,
-            { backgroundColor: getCategoryColor(item.category) },
-          ]}
+          style={{
+            width: 4,
+            backgroundColor: getRandomColor(item.name),
+            marginRight: 10,
+          }}
         />
         <View>
           <Text style={InventoryStyles.ingredientName}>{item.name}</Text>
-          <Text style={InventoryStyles.ingredientMeta}>{item.category}</Text>
         </View>
       </View>
-      {/* Delete button on the right */}
       <TouchableOpacity onPress={() => handleDeleteIngredient(item.name)}>
         <Feather name="trash" size={20} color="#EF4444" />
       </TouchableOpacity>
@@ -183,60 +135,6 @@ const InventoryPage: React.FC = () => {
           </LinearGradient>
         </View>
       </LinearGradient>
-
-      <View style={InventoryStyles.contentContainer}>
-        <View style={InventoryStyles.searchContainer}>
-          <View style={InventoryStyles.searchBar}>
-            <Feather
-              name="search"
-              size={20}
-              color="#9CA3AF"
-              style={InventoryStyles.searchIcon}
-            />
-            <TextInput
-              style={InventoryStyles.searchInput}
-              placeholder="Search ingredients..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              placeholderTextColor="#9CA3AF"
-            />
-            {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchQuery("")}>
-                <Feather name="x" size={20} color="#9CA3AF" />
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-
-        <View style={InventoryStyles.categoryContainer}>
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={CATEGORIES}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  InventoryStyles.categoryButton,
-                  selectedCategory === item &&
-                    InventoryStyles.categoryButtonActive,
-                ]}
-                onPress={() => setSelectedCategory(item)}
-              >
-                <Text
-                  style={[
-                    InventoryStyles.categoryText,
-                    selectedCategory === item &&
-                      InventoryStyles.categoryTextActive,
-                  ]}
-                >
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item}
-          />
-        </View>
-      </View>
     </>
   );
 
@@ -245,9 +143,7 @@ const InventoryPage: React.FC = () => {
       <StatusBar barStyle="light-content" />
       {loading ? (
         <View style={InventoryStyles.loadingContainer}>
-          <Text style={InventoryStyles.loadingText}>
-            Loading ingredients...
-          </Text>
+          <Text style={InventoryStyles.loadingText}>Loading ingredients...</Text>
         </View>
       ) : (
         <Animated.View
@@ -258,7 +154,7 @@ const InventoryPage: React.FC = () => {
           }}
         >
           <FlatList
-            data={filteredIngredients}
+            data={processedIngredients}
             renderItem={renderItem}
             keyExtractor={(item) => item.name}
             ListHeaderComponent={renderHeader}
@@ -272,19 +168,53 @@ const InventoryPage: React.FC = () => {
                   color="#373737"
                   style={{ opacity: 0.5 }}
                 />
-                <Text style={InventoryStyles.emptyText}>
-                  No ingredients found
-                </Text>
+                <Text style={InventoryStyles.emptyText}>No ingredients found</Text>
                 <Text style={InventoryStyles.emptySubtext}>
-                  {searchQuery.length > 0
-                    ? "Try adjusting your search or category filter."
-                    : "Add ingredients by scanning your fridge!"}
+                  Add ingredients by scanning your fridge!
                 </Text>
               </View>
             }
           />
+          <TouchableOpacity
+            style={InventoryStyles.addButton}
+            onPress={() => setShowAddModal(true)}
+          >
+            <Feather name="plus" size={28} color="#FFF8D9" />
+          </TouchableOpacity>
         </Animated.View>
       )}
+      <Modal
+        transparent
+        animationType="slide"
+        visible={showAddModal}
+        onRequestClose={() => setShowAddModal(false)}
+      >
+        <View style={InventoryStyles.modalOverlay}>
+          <View style={InventoryStyles.modalContent}>
+            <Text style={InventoryStyles.modalTitle}>Add New Ingredient</Text>
+            <TextInput
+              style={InventoryStyles.textInput}
+              placeholder="Enter ingredient name"
+              value={newIngredient}
+              onChangeText={setNewIngredient}
+            />
+            <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 16 }}>
+              <TouchableOpacity
+                style={InventoryStyles.cancelButton}
+                onPress={() => setShowAddModal(false)}
+              >
+                <Text style={InventoryStyles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[InventoryStyles.saveButton, { marginLeft: 8 }]}
+                onPress={addNewIngredient}
+              >
+                <Text style={InventoryStyles.saveButtonText}>Add Item</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
