@@ -15,7 +15,8 @@ export default function useIngredients() {
   useEffect(() => {
     const fetchIngredients = async () => {
       if (!userId) {
-        console.warn('No userId found. Cannot fetch ingredients.');
+        console.warn('No userId found. Cannot fetch ingredients. Please log in');
+        
         return;
       }
       try {
